@@ -26,8 +26,18 @@ CREATE TABLE `tbcategorias` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbcategorias`
+--
+
+LOCK TABLES `tbcategorias` WRITE;
+/*!40000 ALTER TABLE `tbcategorias` DISABLE KEYS */;
+INSERT INTO `tbcategorias` VALUES (1,'Produtos Recicláveis'),(2,'Energias Renováveis'),(3,'Moda Sustentável'),(4,'Alimentos Orgânicos'),(5,'Cosméticos Naturais');
+/*!40000 ALTER TABLE `tbcategorias` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tbproduto`
@@ -49,6 +59,15 @@ CREATE TABLE `tbproduto` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `tbproduto`
+--
+
+LOCK TABLES `tbproduto` WRITE;
+/*!40000 ALTER TABLE `tbproduto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbproduto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tbusu`
 --
 
@@ -64,6 +83,15 @@ CREATE TABLE `tbusu` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbusu`
+--
+
+LOCK TABLES `tbusu` WRITE;
+/*!40000 ALTER TABLE `tbusu` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbusu` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -74,4 +102,4 @@ CREATE TABLE `tbusu` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-14 21:08:44
+-- Dump completed on 2025-07-14 21:48:33

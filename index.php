@@ -1,13 +1,13 @@
 <?php
 require_once 'classes/Produto.php';
+require_once 'classes/Categoria.php';
 
-// Obter categorias únicas dos produtos simulados
-$produtos = Produto::buscarTodos();
-$categorias = array_unique(array_map(function($p) { return $p->categoria; }, $produtos));
+// Buscar todas as categorias do banco
+$listaCategorias = Categoria::buscarTodas();
 
 // Filtragem por categoria
 $categoriaSelecionada = isset($_GET['categoria']) ? $_GET['categoria'] : '';
-if ($categoriaSelecionada && in_array($categoriaSelecionada, $categorias)) {
+if ($categoriaSelecionada) {
     $produtos = Produto::buscarPorCategoria($categoriaSelecionada);
 } else {
     $produtos = Produto::buscarTodos();
@@ -179,8 +179,8 @@ if ($categoriaSelecionada && in_array($categoriaSelecionada, $categorias)) {
             <label for="categoria">Filtrar por categoria:</label>
             <select name="categoria" id="categoria" onchange="this.form.submit()">
                 <option value="">Todas</option>
-                <?php foreach ($categorias as $cat): ?>
-                    <option value="<?php echo htmlspecialchars($cat); ?>" <?php if ($cat === $categoriaSelecionada) echo 'selected'; ?>><?php echo htmlspecialchars($cat); ?></option>
+                <?php foreach ($listaCategorias as $cat): ?>
+                    <option value="<?php echo htmlspecialchars($cat->nome); ?>" <?php if ($cat->nome === $categoriaSelecionada) echo 'selected'; ?>><?php echo htmlspecialchars($cat->nome); ?></option>
                 <?php endforeach; ?>
             </select>
         </form>

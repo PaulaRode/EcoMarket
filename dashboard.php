@@ -3,14 +3,17 @@ session_start();
 require_once 'classes/Usuario.php';
 require_once 'classes/Produto.php';
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit();
-}
+// Verificar se o usuário está logado (opcional)
+$usuario = null;
+$produtos = [];
 
-$usuario = Usuario::buscarPorId($_SESSION['usuario_id']);
-$produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
+if (isset($_SESSION['usuario_id'])) {
+    $usuario = Usuario::buscarPorId($_SESSION['usuario_id']);
+    $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
+} else {
+    // Se não estiver logado, mostrar todos os produtos
+    $produtos = Produto::buscarTodos();
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,252 +24,236 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            font-family: 'Segoe UI', 'Roboto', 'Open Sans', 'Helvetica Neue', Arial, sans-serif; 
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
             min-height: 100vh;
         }
-        
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px; 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+            background: rgba(255,255,255,0.97);
+            border-radius: 18px;
+            padding: 28px 24px;
+            margin-bottom: 36px;
+            box-shadow: 0 4px 24px rgba(76, 175, 80, 0.10);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 18px;
         }
-        
         .header h1 {
             color: #2e7d32;
-            font-size: 1.8em;
-            font-weight: 600;
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
+        .header h1::after {
+            content: '\1F331'; /* emoji muda de folha */
+            font-size: 1.2em;
+        }
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-        
         .user-info span {
             color: #388e3c;
             font-weight: 500;
         }
-        
         .logout-btn {
-            background: #ff6b6b;
+            background: #ff7043;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 8px 18px;
+            border-radius: 22px;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.2s;
         }
-        
         .logout-btn:hover {
-            background: #ff5252;
+            background: #d84315;
             transform: translateY(-2px);
         }
-        
         .actions-bar {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
+            background: rgba(255,255,255,0.93);
+            border-radius: 14px;
+            padding: 22px 18px;
+            margin-bottom: 28px;
             box-shadow: 0 2px 12px rgba(76, 175, 80, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 18px;
         }
-        
         .add-product-btn {
-            background: linear-gradient(135deg, #66bb6a, #4caf50);
+            background: linear-gradient(135deg, #81c784, #388e3c);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
+            padding: 13px 28px;
+            border-radius: 28px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(56, 142, 60, 0.10);
+        }
+        .add-product-btn:hover {
+            background: linear-gradient(135deg, #388e3c, #81c784);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 18px rgba(56, 142, 60, 0.18);
+        }
+        .stats {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: #f9fbe7;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 1px 4px rgba(139, 195, 74, 0.08);
+        }
+        .stat-number {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #43a047;
+        }
+        .stat-label {
+            font-size: 1em;
+            color: #7cb342;
+            margin-top: 4px;
+        }
+        .products-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+            margin-top: 28px;
+        }
+        .product-card {
+            background: linear-gradient(90deg, #f1f8e9 60%, #e0f2f1 100%);
+            border-radius: 18px;
+            box-shadow: 0 4px 18px rgba(56, 142, 60, 0.08);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow: hidden;
+            position: relative;
+            border-left: 8px solid #81c784;
+        }
+        .product-image {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 0 18px 18px 0;
+            margin-right: 0;
+            background: #c8e6c9;
+            flex-shrink: 0;
+        }
+        .product-info {
+            flex: 1;
+            padding: 24px 24px 24px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .product-title {
+            font-size: 1.25em;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 2px;
+        }
+        .product-description {
+            color: #5d6d5d;
+            margin-bottom: 6px;
+            line-height: 1.5;
+            font-size: 1em;
+        }
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #388e3c;
+            margin-bottom: 4px;
+        }
+        .product-category {
+            background: #e8f5e9;
+            color: #388e3c;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            display: inline-block;
+            margin-bottom: 0;
+        }
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-right: 24px;
+            align-items: flex-end;
+        }
+        .btn-edit, .btn-delete {
+            border: none;
+            padding: 10px 22px;
+            border-radius: 22px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
-        .add-product-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-        }
-        
-        .stats {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        
-        .stat-item {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            border-radius: 10px;
-            text-align: center;
-            min-width: 120px;
-        }
-        
-        .stat-number {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #2e7d32;
-        }
-        
-        .stat-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 4px;
-        }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-        
-        .product-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #66bb6a, #4caf50);
-        }
-        
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(76, 175, 80, 0.15);
-        }
-        
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .product-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: #2e7d32;
-            margin-bottom: 8px;
-        }
-        
-        .product-description {
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-        
-        .product-price {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #1b5e20;
-            margin-bottom: 8px;
-        }
-        
-        .product-category {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            display: inline-block;
-            margin-bottom: 16px;
-        }
-        
-        .product-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        
         .btn-edit {
-            background: #ffa726;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-            flex: 1;
+            background: #fffde7;
+            color: #fbc02d;
+            border: 1.5px solid #fbc02d;
         }
-        
         .btn-edit:hover {
-            background: #ff9800;
-            transform: translateY(-1px);
+            background: #fff9c4;
+            color: #e65100;
+            border-color: #e65100;
+            transform: translateY(-1px) scale(1.04);
         }
-        
         .btn-delete {
-            background: #ef5350;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-            flex: 1;
+            background: #ffebee;
+            color: #e57373;
+            border: 1.5px solid #e57373;
         }
-        
         .btn-delete:hover {
-            background: #f44336;
-            transform: translateY(-1px);
+            background: #ffcdd2;
+            color: #b71c1c;
+            border-color: #b71c1c;
+            transform: translateY(-1px) scale(1.04);
         }
-        
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: #666;
         }
-        
         .empty-state h3 {
             color: #2e7d32;
             margin-bottom: 16px;
             font-size: 1.5em;
         }
-        
         .empty-state p {
             margin-bottom: 24px;
             font-size: 1.1em;
         }
-        
         /* Modal de confirmação */
         .modal-overlay {
             display: none;
@@ -277,9 +264,7 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
             justify-content: center;
             align-items: center;
         }
-        
         .modal-overlay.active { display: flex; }
-        
         .modal-confirm {
             background: white;
             border-radius: 16px;
@@ -288,23 +273,19 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
             text-align: center;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
-        
         .modal-confirm h3 {
             color: #2e7d32;
             margin-bottom: 16px;
         }
-        
         .modal-confirm p {
             color: #666;
             margin-bottom: 24px;
         }
-        
         .modal-actions {
             display: flex;
             gap: 12px;
             justify-content: center;
         }
-        
         .btn-cancel {
             background: #9e9e9e;
             color: white;
@@ -313,7 +294,6 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
             border-radius: 20px;
             cursor: pointer;
         }
-        
         .btn-confirm {
             background: #ef5350;
             color: white;
@@ -322,15 +302,23 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
             border-radius: 20px;
             cursor: pointer;
         }
-        
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .container { padding: 16px; }
-            .header { flex-direction: column; text-align: center; }
-            .actions-bar { flex-direction: column; text-align: center; }
+        @media (max-width: 900px) {
+            .container { padding: 8px; }
+            .header, .actions-bar { flex-direction: column; text-align: center; }
             .stats { justify-content: center; }
-            .products-grid { grid-template-columns: 1fr; }
-            .product-actions { flex-direction: column; }
+        }
+        @media (max-width: 700px) {
+            .products-grid { gap: 18px; }
+            .product-card { flex-direction: column; align-items: stretch; border-left: 0; border-top: 8px solid #81c784; }
+            .product-image { width: 100%; height: 180px; border-radius: 0 0 18px 18px; }
+            .product-actions { flex-direction: row; justify-content: flex-end; margin: 12px 0 0 0; }
+            .product-info { padding: 18px 12px 8px 12px; }
+        }
+        @media (max-width: 500px) {
+            .header h1 { font-size: 1.2em; }
+            .product-title { font-size: 1em; }
+            .product-description { font-size: 0.95em; }
+            .product-image { height: 120px; }
         }
     </style>
 </head>
@@ -339,15 +327,26 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
         <div class="header">
             <h1>🌱 Dashboard do Produtor</h1>
             <div class="user-info">
-                <span>Olá, <?php echo htmlspecialchars($usuario->nome); ?></span>
-                <button class="logout-btn" onclick="logout()">Sair</button>
+                <?php if ($usuario): ?>
+                    <span>Olá, <?php echo htmlspecialchars($usuario->nome); ?></span>
+                    <button class="logout-btn" onclick="logout()">Sair</button>
+                <?php else: ?>
+                    <span>Visualizando todos os produtos</span>
+                    <button class="logout-btn" onclick="window.location.href='login.php'">Login</button>
+                <?php endif; ?>
             </div>
         </div>
         
         <div class="actions-bar">
-            <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
-                ➕ Adicionar Produto
-            </button>
+            <?php if ($usuario): ?>
+                <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
+                    ➕ Adicionar Produto
+                </button>
+            <?php else: ?>
+                <button class="add-product-btn" onclick="window.location.href='login.php'">
+                    🔐 Fazer Login para Gerenciar
+                </button>
+            <?php endif; ?>
             <div class="stats">
                 <div class="stat-item">
                     <div class="stat-number"><?php echo count($produtos); ?></div>
@@ -364,27 +363,37 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
             <div class="empty-state">
                 <h3>Nenhum produto cadastrado ainda</h3>
                 <p>Comece adicionando seu primeiro produto sustentável!</p>
-                <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
-                    ➕ Adicionar Primeiro Produto
-                </button>
+                <?php if ($usuario): ?>
+                    <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
+                        ➕ Adicionar Primeiro Produto
+                    </button>
+                <?php else: ?>
+                    <button class="add-product-btn" onclick="window.location.href='login.php'">
+                        🔐 Fazer Login para Adicionar
+                    </button>
+                <?php endif; ?>
             </div>
         <?php else: ?>
             <div class="products-grid">
                 <?php foreach ($produtos as $produto): ?>
                     <div class="product-card">
                         <img src="imagens/<?php echo $produto->imagem; ?>" alt="<?php echo htmlspecialchars($produto->nome); ?>" class="product-image">
-                        <h3 class="product-title"><?php echo htmlspecialchars($produto->nome); ?></h3>
-                        <p class="product-description"><?php echo htmlspecialchars($produto->descricao); ?></p>
-                        <div class="product-price">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></div>
-                        <div class="product-category"><?php echo htmlspecialchars($produto->categoria); ?></div>
+                        <div class="product-info">
+                            <h3 class="product-title"><?php echo htmlspecialchars($produto->nome); ?></h3>
+                            <p class="product-description"><?php echo htmlspecialchars($produto->descricao); ?></p>
+                            <div class="product-price">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></div>
+                            <div class="product-category"><?php echo htmlspecialchars($produto->categoria); ?></div>
+                        </div>
+                        <?php if ($usuario): ?>
                         <div class="product-actions">
                             <button class="btn-edit" onclick="editarProduto(<?php echo $produto->id; ?>)">
-                                ✏️ Editar
+                                ✏️ Alterar
                             </button>
                             <button class="btn-delete" onclick="confirmarExclusao(<?php echo $produto->id; ?>, '<?php echo htmlspecialchars($produto->nome); ?>')">
                                 🗑️ Excluir
                             </button>
                         </div>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -410,6 +419,10 @@ $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
             if (confirm('Tem certeza que deseja sair?')) {
                 window.location.href = 'logout.php';
             }
+        }
+        
+        function login() {
+            window.location.href = 'login.php';
         }
         
         function editarProduto(id) {

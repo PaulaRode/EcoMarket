@@ -182,7 +182,7 @@ if ($categoriaSelecionada && in_array($categoriaSelecionada, $categorias)) {
         <div class="vitrine">
             <?php foreach ($produtos as $produto): ?>
                 <div class="card">
-                    <img src="imagens/<?php echo $produto->imagem; ?>" alt="<?php echo htmlspecialchars($produto->nome); ?>">
+                    <img src="<?php echo $produto->imagem ? 'imagens/' . $produto->imagem : 'https://via.placeholder.com/120x120?text=Produto'; ?>" alt="<?php echo htmlspecialchars($produto->nome); ?>">
                     <h2><?php echo htmlspecialchars($produto->nome); ?></h2>
                     <p><?php echo htmlspecialchars($produto->descricao); ?></p>
                     <div class="preco">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></div>

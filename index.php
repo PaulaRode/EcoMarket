@@ -20,7 +20,7 @@ if ($categoriaSelecionada && in_array($categoriaSelecionada, $categorias)) {
     <title>EcoMarket - Vitrine de Produtos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', 'Roboto', 'Open Sans', 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
         .container { max-width: 1200px; margin: 40px auto; padding: 20px; }
         h1 { text-align: center; color: #2e7d32; }
         .topo-links { text-align: right; margin-bottom: 12px; }
@@ -165,7 +165,7 @@ if ($categoriaSelecionada && in_array($categoriaSelecionada, $categorias)) {
             </div>
         </div>
         <div class="institucional">
-            <h2>Bem-vindo ao EcoMarket!</h2>
+            <h2>EcoMarket: onde suas compras cuidam do planeta 🌱</h2>
             <p>O EcoMarket conecta você a produtos sustentáveis, naturais e orgânicos, promovendo o consumo consciente e apoiando pequenos produtores locais. Junte-se a nós nessa causa e descubra uma nova forma de consumir!</p>
             <a class="cta" href="#vitrine">Conheça nossos produtores</a>
         </div>

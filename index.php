@@ -146,8 +146,13 @@ if ($categoriaSelecionada && in_array($categoriaSelecionada, $categorias)) {
 </head>
 <body>
     <div class="container">
+        <div style="display:flex; align-items:center; gap:18px; margin-bottom:10px; flex-wrap:wrap;">
+            <img src="assets/logo.png" alt="EcoMarket Logo" style="height:60px; width:auto; max-width:120px;">
+            <span style="font-size:2em; color:#43a047; font-weight:bold; font-family:'Segoe UI', 'Roboto', Arial, sans-serif; letter-spacing:1px;">EcoMarket</span>
+        </div>
         <div class="topo-links">
             <a href="contato.php">Contato</a>
+            <a href="dashboard.php" class="dashboard-btn">Dashboard</a>
             <button type="button" class="login-btn" id="abrirLogin">Login</button>
         </div>
         <!-- Modal de Login -->

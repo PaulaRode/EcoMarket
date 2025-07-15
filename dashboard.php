@@ -23,23 +23,34 @@ if (isset($_SESSION['usuario_id'])) {
     <title>Dashboard - EcoMarket</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
+        :root {
+            --verde-principal: #43a047;
+            --verde-claro: #e8f5e9;
+            --verde-medio: #a5d6a7;
+            --verde-escuro: #2e7d32;
+            --branco: #fff;
+            --cinza-leve: #f5f5f5;
+            --cinza-texto: #5d6d5d;
+            --amarelo-suave: #fffde7;
+            --vermelho-suave: #ffebee;
+            --sombra: 0 2px 16px rgba(67, 160, 71, 0.08);
+        }
+        html, body {
             font-family: 'Segoe UI', 'Roboto', 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            background: linear-gradient(135deg, var(--verde-claro) 0%, var(--cinza-leve) 100%);
             min-height: 100vh;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 10px 40px 10px;
         }
         .header {
-            background: rgba(255,255,255,0.97);
+            background: var(--branco);
             border-radius: 18px;
-            padding: 28px 24px;
-            margin-bottom: 36px;
-            box-shadow: 0 4px 24px rgba(76, 175, 80, 0.10);
+            padding: 28px 24px 18px 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--sombra);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -47,8 +58,8 @@ if (isset($_SESSION['usuario_id'])) {
             gap: 18px;
         }
         .header h1 {
-            color: #2e7d32;
-            font-size: 2em;
+            color: var(--verde-escuro);
+            font-size: 2.1em;
             font-weight: 700;
             letter-spacing: 1px;
             display: flex;
@@ -56,8 +67,22 @@ if (isset($_SESSION['usuario_id'])) {
             gap: 10px;
         }
         .header h1::after {
-            content: '\1F331'; /* emoji muda de folha */
+            content: '\1F331';
             font-size: 1.2em;
+        }
+        .dashboard-btn {
+            background: var(--verde-principal);
+            color: var(--branco);
+            padding: 8px 22px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 6px rgba(67,160,71,0.08);
+        }
+        .dashboard-btn:hover {
+            background: var(--verde-escuro);
         }
         .user-info {
             display: flex;
@@ -65,7 +90,7 @@ if (isset($_SESSION['usuario_id'])) {
             gap: 14px;
         }
         .user-info span {
-            color: #388e3c;
+            color: var(--verde-principal);
             font-weight: 500;
         }
         .logout-btn {
@@ -84,11 +109,11 @@ if (isset($_SESSION['usuario_id'])) {
             transform: translateY(-2px);
         }
         .actions-bar {
-            background: rgba(255,255,255,0.93);
+            background: var(--branco);
             border-radius: 14px;
             padding: 22px 18px;
             margin-bottom: 28px;
-            box-shadow: 0 2px 12px rgba(76, 175, 80, 0.08);
+            box-shadow: var(--sombra);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -96,8 +121,8 @@ if (isset($_SESSION['usuario_id'])) {
             gap: 18px;
         }
         .add-product-btn {
-            background: linear-gradient(135deg, #81c784, #388e3c);
-            color: white;
+            background: linear-gradient(135deg, var(--verde-medio), var(--verde-principal));
+            color: var(--branco);
             border: none;
             padding: 13px 28px;
             border-radius: 28px;
@@ -111,7 +136,7 @@ if (isset($_SESSION['usuario_id'])) {
             box-shadow: 0 2px 8px rgba(56, 142, 60, 0.10);
         }
         .add-product-btn:hover {
-            background: linear-gradient(135deg, #388e3c, #81c784);
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-medio));
             transform: translateY(-2px) scale(1.03);
             box-shadow: 0 4px 18px rgba(56, 142, 60, 0.18);
         }
@@ -121,7 +146,7 @@ if (isset($_SESSION['usuario_id'])) {
             flex-wrap: wrap;
         }
         .stat-item {
-            background: #f9fbe7;
+            background: var(--verde-claro);
             padding: 14px 24px;
             border-radius: 12px;
             text-align: center;
@@ -131,11 +156,11 @@ if (isset($_SESSION['usuario_id'])) {
         .stat-number {
             font-size: 1.6em;
             font-weight: bold;
-            color: #43a047;
+            color: var(--verde-principal);
         }
         .stat-label {
             font-size: 1em;
-            color: #7cb342;
+            color: var(--verde-escuro);
             margin-top: 4px;
         }
         .products-grid {
@@ -145,16 +170,16 @@ if (isset($_SESSION['usuario_id'])) {
             margin-top: 28px;
         }
         .product-card {
-            background: linear-gradient(90deg, #f1f8e9 60%, #e0f2f1 100%);
+            background: linear-gradient(90deg, var(--branco) 60%, var(--verde-claro) 100%);
             border-radius: 18px;
-            box-shadow: 0 4px 18px rgba(56, 142, 60, 0.08);
+            box-shadow: var(--sombra);
             padding: 0;
             display: flex;
             align-items: center;
             gap: 0;
             overflow: hidden;
             position: relative;
-            border-left: 8px solid #81c784;
+            border-left: 8px solid var(--verde-medio);
         }
         .product-image {
             width: 140px;
@@ -162,7 +187,7 @@ if (isset($_SESSION['usuario_id'])) {
             object-fit: cover;
             border-radius: 0 18px 18px 0;
             margin-right: 0;
-            background: #c8e6c9;
+            background: var(--verde-medio);
             flex-shrink: 0;
         }
         .product-info {
@@ -175,11 +200,11 @@ if (isset($_SESSION['usuario_id'])) {
         .product-title {
             font-size: 1.25em;
             font-weight: 600;
-            color: #2e7d32;
+            color: var(--verde-escuro);
             margin-bottom: 2px;
         }
         .product-description {
-            color: #5d6d5d;
+            color: var(--cinza-texto);
             margin-bottom: 6px;
             line-height: 1.5;
             font-size: 1em;
@@ -187,12 +212,12 @@ if (isset($_SESSION['usuario_id'])) {
         .product-price {
             font-size: 1.1em;
             font-weight: bold;
-            color: #388e3c;
+            color: var(--verde-principal);
             margin-bottom: 4px;
         }
         .product-category {
-            background: #e8f5e9;
-            color: #388e3c;
+            background: var(--verde-claro);
+            color: var(--verde-principal);
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 0.95em;
@@ -219,7 +244,7 @@ if (isset($_SESSION['usuario_id'])) {
             gap: 8px;
         }
         .btn-edit {
-            background: #fffde7;
+            background: var(--amarelo-suave);
             color: #fbc02d;
             border: 1.5px solid #fbc02d;
         }
@@ -230,7 +255,7 @@ if (isset($_SESSION['usuario_id'])) {
             transform: translateY(-1px) scale(1.04);
         }
         .btn-delete {
-            background: #ffebee;
+            background: var(--vermelho-suave);
             color: #e57373;
             border: 1.5px solid #e57373;
         }
@@ -246,7 +271,7 @@ if (isset($_SESSION['usuario_id'])) {
             color: #666;
         }
         .empty-state h3 {
-            color: #2e7d32;
+            color: var(--verde-escuro);
             margin-bottom: 16px;
             font-size: 1.5em;
         }
@@ -259,22 +284,22 @@ if (isset($_SESSION['usuario_id'])) {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.18);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .modal-overlay.active { display: flex; }
         .modal-confirm {
-            background: white;
+            background: var(--branco);
             border-radius: 16px;
             padding: 32px;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 32px rgba(67,160,71,0.13);
         }
         .modal-confirm h3 {
-            color: #2e7d32;
+            color: var(--verde-escuro);
             margin-bottom: 16px;
         }
         .modal-confirm p {
@@ -309,7 +334,7 @@ if (isset($_SESSION['usuario_id'])) {
         }
         @media (max-width: 700px) {
             .products-grid { gap: 18px; }
-            .product-card { flex-direction: column; align-items: stretch; border-left: 0; border-top: 8px solid #81c784; }
+            .product-card { flex-direction: column; align-items: stretch; border-left: 0; border-top: 8px solid var(--verde-medio); }
             .product-image { width: 100%; height: 180px; border-radius: 0 0 18px 18px; }
             .product-actions { flex-direction: row; justify-content: flex-end; margin: 12px 0 0 0; }
             .product-info { padding: 18px 12px 8px 12px; }
@@ -325,7 +350,8 @@ if (isset($_SESSION['usuario_id'])) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌱 Dashboard do Produtor</h1>
+            <img src="assets/logo(1).png" alt="EcoMarket Logo" style="height:48px; width:auto; max-width:90px; margin-right:14px;">
+            <h1>🌱 Área do Produtor</h1>
             <div class="user-info">
                 <?php if ($usuario): ?>
                     <span>Olá, <?php echo htmlspecialchars($usuario->nome); ?></span>
@@ -335,6 +361,7 @@ if (isset($_SESSION['usuario_id'])) {
                     <button class="logout-btn" onclick="window.location.href='login.php'">Login</button>
                 <?php endif; ?>
             </div>
+            <a href="index.php" class="dashboard-btn" style="margin-left:auto; background:#388e3c; color:white; padding:8px 22px; border-radius:20px; text-decoration:none; font-weight:bold;">← Voltar para Vitrine</a>
         </div>
         
         <div class="actions-bar">

@@ -7,11 +7,11 @@ class Produto {
         $this->conn = $db;
     }
 
-    public function criar($nome, $descricao, $preco, $categoria) {
-        $query = "INSERT INTO " . $this->table_name . " (nome, descricao, preco, categoria_id) VALUES (?, ?, ?, ?)";
+    public function criar($nome, $descricao, $preco, $categoria_id, $imagem = null)
+    {
+        $query = "INSERT INTO {$this->table_name} (nome, descricao, preco, categoria_id, imagem) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-
-        return $stmt->execute([$nome, $descricao, $preco, $categoria]);
+        return $stmt->execute([$nome, $descricao, $preco, $categoria_id, $imagem]);
     }
 
     public function ler() {

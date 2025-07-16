@@ -5,6 +5,26 @@ require_once 'classes/Categoria.php';
 // Buscar todas as categorias do banco
 $listaCategorias = Categoria::buscarTodas();
 
+// Se não houver categorias, inserir algumas padrão
+if (empty($listaCategorias)) {
+    $conn = DataBase::getConnection();
+    $categoriasPadrao = [
+        'Alimentos Orgânicos',
+        'Produtos de Limpeza Ecológicos',
+        'Cosméticos Naturais',
+        'Produtos Artesanais',
+        'Hortifruti Orgânico'
+    ];
+    
+    foreach ($categoriasPadrao as $categoria) {
+        $stmt = $conn->prepare("INSERT INTO tbCategorias (nome) VALUES (?)");
+        $stmt->execute([$categoria]);
+    }
+    
+    // Buscar categorias novamente
+    $listaCategorias = Categoria::buscarTodas();
+}
+
 // Filtragem por categoria
 $categoriaSelecionada = isset($_GET['categoria']) ? $_GET['categoria'] : '';
 if ($categoriaSelecionada) {

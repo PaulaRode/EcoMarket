@@ -28,7 +28,7 @@ class Produto {
         $conn = DataBase::getConnection();
         $sql = 'SELECT p.id, p.nome, p.descricao, p.preco, c.nome as categoria, p.link_img as imagem
                 FROM tbproduto p
-                JOIN tbcategorias c ON p.categoria = c.id';
+                JOIN tbCategorias c ON p.categoria = c.id';
         $stmt = $conn->query($sql);
         $produtos = [];
         while ($row = $stmt->fetch()) {
@@ -48,7 +48,7 @@ class Produto {
         $conn = DataBase::getConnection();
         $sql = 'SELECT p.id, p.nome, p.descricao, p.preco, c.nome as categoria, p.link_img as imagem
                 FROM tbproduto p
-                JOIN tbcategorias c ON p.categoria = c.id
+                JOIN tbCategorias c ON p.categoria = c.id
                 WHERE c.nome = :categoriaNome';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['categoriaNome' => $categoriaNome]);
@@ -70,7 +70,7 @@ class Produto {
         $conn = DataBase::getConnection();
         $sql = 'SELECT p.id, p.nome, p.descricao, p.preco, c.nome as categoria, p.link_img as imagem
                 FROM tbproduto p
-                JOIN tbcategorias c ON p.categoria = c.id
+                JOIN tbCategorias c ON p.categoria = c.id
                 WHERE p.id_usuario = :produtorId';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['produtorId' => $produtorId]);
@@ -129,7 +129,7 @@ class Produto {
 
         $query = "SELECT p.id, p.nome, p.descricao, p.preco, c.nome as categoria, p.link_img as imagem
                   FROM tbproduto p
-                  JOIN tbcategorias c ON p.categoria = c.id
+                  JOIN tbCategorias c ON p.categoria = c.id
                   WHERE p.id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$id]);

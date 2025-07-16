@@ -2,9 +2,13 @@
 include_once './config/config.php';
 include_once './classes/DataBase.php';
 include_once './classes/Produto.php';
+include_once './classes/Categoria.php';
 
 $db = DataBase::getConnection();
 $produtoObj = new Produto($db);
+
+// Buscar categorias do banco
+$listaCategorias = Categoria::buscarTodas();
 
 // Verifica se o ID foi passado
 if (!isset($_GET['id'])) {
@@ -78,12 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <textarea name="descricao" required><?= htmlspecialchars($produto['descricao']) ?></textarea>
 
             <label>Preço:</label><br>
-            <input type="number" step="0.01" name="preco" value="<?= htmlspecialchars($produto['preco']) ?>" required>
+            <input type="text" name="preco" id="preco" placeholder="0,00" pattern="[0-9]+([,\.][0-9]{1,2})?" onkeypress="return validarPreco(event)" oninput="formatarPreco(this)" value="<?= htmlspecialchars(str_replace('.', ',', $produto['preco'])) ?>" required>
 
             <label>Categoria:</label><br>
             <select name="categoria" required>
-                <option value="1" <?= $produto['categoria'] == 'alimentos' ? 'selected' : '' ?>>Alimentos</option>
-                <option value="2" <?= $produto['categoria'] == 'limpeza' ? 'selected' : '' ?>>Limpeza</option>
+                <?php foreach ($listaCategorias as $categoria): ?>
+                    <option value="<?php echo $categoria->id; ?>" <?= $produto['categoria'] == $categoria->nome ? 'selected' : '' ?>>
+                        <?php echo htmlspecialchars($categoria->nome); ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
 
             <label>Imagem atual:</label><br>
@@ -107,6 +114,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </a>
 
     </div>
+
+    <script>
+        // Função para validar entrada de preço
+        function validarPreco(event) {
+            const char = String.fromCharCode(event.which);
+            const input = event.target;
+            const value = input.value;
+            
+            // Permitir apenas números, vírgula e ponto
+            if (!/[0-9,\.]/.test(char)) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Não permitir mais de uma vírgula ou ponto
+            if ((char === ',' || char === '.') && (value.includes(',') || value.includes('.'))) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Não permitir vírgula ou ponto no início
+            if ((char === ',' || char === '.') && value.length === 0) {
+                event.preventDefault();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Função para formatar o preço
+        function formatarPreco(input) {
+            let value = input.value;
+            
+            // Remover tudo exceto números, vírgula e ponto
+            value = value.replace(/[^0-9,\.]/g, '');
+            
+            // Substituir vírgula por ponto para cálculos
+            value = value.replace(',', '.');
+            
+            // Garantir apenas um ponto decimal
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limitar a 2 casas decimais
+            if (parts.length === 2 && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            
+            // Converter de volta para vírgula para exibição
+            value = value.replace('.', ',');
+            
+            input.value = value;
+        }
+        
+        // Validação do formulário antes do envio
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const precoInput = document.getElementById('preco');
+            const preco = precoInput.value.replace(',', '.');
+            
+            if (isNaN(preco) || parseFloat(preco) <= 0) {
+                e.preventDefault();
+                alert('Por favor, insira um preço válido maior que zero.');
+                precoInput.focus();
+                return false;
+            }
+        });
+    </script>
+
 </body>
 
 </html>

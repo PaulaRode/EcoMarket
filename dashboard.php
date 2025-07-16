@@ -39,6 +39,20 @@ if (isset($_SESSION['id'])) {
     $usuario = $usuarioObj->buscarPorId($_SESSION['id']);
     // Buscar apenas os produtos do usuário logado
     $produtos = Produto::buscarPorProdutor($_SESSION['id']);
+    
+    // Preparar dados para o gráfico de pizza
+    $dadosGrafico = [];
+    foreach ($produtos as $produto) {
+        $categoria = $produto->categoria;
+        if (!isset($dadosGrafico[$categoria])) {
+            $dadosGrafico[$categoria] = 0;
+        }
+        $dadosGrafico[$categoria]++;
+    }
+    
+    // Preparar arrays para o JavaScript
+    $labelsGrafico = array_keys($dadosGrafico);
+    $dadosGrafico = array_values($dadosGrafico);
 } else {
     // Se não conseguir buscar o usuário, fazer logout
     session_destroy();
@@ -53,6 +67,7 @@ if (isset($_SESSION['id'])) {
     <meta charset="UTF-8">
     <title>Dashboard - EcoMarket</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --verde-principal: #388e3c;
@@ -587,6 +602,42 @@ if (isset($_SESSION['id'])) {
             margin-bottom: 20px;
             font-size: 1.05em;
         }
+        
+        /* Estilos para o gráfico */
+        .chart-container {
+            background: var(--branco);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--sombra);
+            border: var(--borda-card);
+        }
+        
+        .chart-title {
+            color: var(--verde-escuro);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .chart-empty {
+            text-align: center;
+            color: var(--cinza-texto);
+            font-style: italic;
+            padding: 40px;
+        }
         @media (max-width: 900px) {
             .container { padding: 8px; }
             .header, .actions-bar { flex-direction: column; text-align: center; }
@@ -653,6 +704,20 @@ if (isset($_SESSION['id'])) {
                     <div class="stat-label">Categorias</div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Gráfico de Pizza - Produtos por Categoria -->
+        <div class="chart-container">
+            <h2 class="chart-title">📊 Distribuição de Produtos por Categoria</h2>
+            <?php if (empty($produtos)): ?>
+                <div class="chart-empty">
+                    <p>Nenhum produto cadastrado ainda. Adicione produtos para ver o gráfico!</p>
+                </div>
+            <?php else: ?>
+                <div class="chart-wrapper">
+                    <canvas id="graficoPizza"></canvas>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     
@@ -798,6 +863,75 @@ if (isset($_SESSION['id'])) {
                 }, 300);
             }, 5000);
         });
+        
+        // Gráfico de Pizza - Produtos por Categoria
+        <?php if (!empty($produtos)): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('graficoPizza').getContext('2d');
+            
+            // Cores para as categorias (tons de verde)
+            const cores = [
+                '#388e3c', '#66bb6a', '#a5d6a7', '#c8e6c9', '#e8f5e9',
+                '#2e7d32', '#4caf50', '#81c784', '#a5d6a7', '#c8e6c9'
+            ];
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: <?php echo json_encode($labelsGrafico); ?>,
+                    datasets: [{
+                        data: <?php echo json_encode($dadosGrafico); ?>,
+                        backgroundColor: cores.slice(0, <?php echo count($labelsGrafico); ?>),
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        hoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                color: '#205723'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(56, 142, 60, 0.9)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#388e3c',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} produto${value > 1 ? 's' : ''} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        });
+        <?php endif; ?>
     </script>
 </body>
 </html>

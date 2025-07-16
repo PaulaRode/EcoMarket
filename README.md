@@ -1,66 +1,45 @@
-🛒 EcoMarket – Conectando Sustentabilidade e Consumo 🌱
-EcoMarket é um marketplace voltado para produtos ecológicos, com o objetivo de aproximar produtores sustentáveis de consumidores conscientes.
-Este repositório reúne o planejamento inicial do projeto, incluindo Product Backlog, User Stories e Critérios de Aceitação.
+**EcoMarket** 🛒🌱
+EcoMarket é um marketplace focado em produtos ecológicos, conectando produtores sustentáveis com consumidores conscientes.
 
-🚀 Funcionalidades Principais
-🌍 Área Pública (sem login)
-🛍️ Vitrine de Produtos: Lista de produtos com imagem, nome, descrição, preço e categoria.
+Este repositório contém o planejamento inicial do projeto, incluindo o Product Backlog, User Stories e Critérios de Aceitação.
 
-🔎 Filtro por Categoria: Permite filtrar produtos por categorias como Alimentos e Cosméticos.
+##🔖 Funcionalidades
+###📢 Área Pública (sem login)
+**Vitrine de Produtos:** Exibe produtos com imagem, nome, descrição, preço e categoria.
 
-🏠 Página Inicial Institucional: Apresenta a missão do EcoMarket e incentiva o usuário a conhecer os produtores.
+**Filtro por Categoria:** Permite filtrar produtos por categoria (ex: Alimentos, Cosméticos).
 
-📬 Página de Contato: Formulário fictício com informações de contato.
+**Página Inicial Institucional:** Apresenta a causa do EcoMarket e convida o usuário a conhecer os produtores.
 
-👩‍🌾 Área do Produtor (com login)
-🔐 Login de Produtor: Acesso autenticado via e-mail e senha.
+**Página de Contato:** Contém formulário fictício e dados de contato.
 
-➕ Cadastro de Produtos: Formulário com nome, descrição, preço, categoria e imagem.
+**👨‍🌾 Área do Produtor (com login)**
+Login do Produtor: Autenticação por e-mail e senha.
 
-📋 Dashboard de Produtos: Exibe os produtos cadastrados com opções de edição e exclusão.
+Cadastro de Produto: Formulário com nome, descrição, preço, categoria e upload de imagem.
 
-✅ Feedback Visual: Confirmação de ações como cadastro e exclusão de produtos.
+Dashboard de Produtos: Lista de produtos do produtor com opções de editar e excluir.
 
-✨ Funcionalidades Desejáveis (Extras)
-ℹ️ Página “Sobre o EcoMarket”: Detalhes sobre missão, visão e valores do projeto.
+Feedback Visual: Mensagens de confirmação para ações como cadastro de produtos.
 
-❗ Modal de Confirmação de Exclusão: Prevenção contra exclusões acidentais.
+**✨ Funcionalidades Desejáveis**
+Página “Sobre o EcoMarket”: Informações sobre missão, visão e valores.
 
-🗺️ Mapa Estático dos Produtores: Localização visual dos produtores participantes.
+Confirmação de Exclusão: Modal de confirmação ao excluir produtos.
 
-👥 Histórias de Usuário
-Público Visitante
-Como visitante, quero visualizar uma vitrine com produtos sustentáveis.
-
-Como visitante, quero filtrar produtos por categoria.
-
-Como visitante, quero entender a proposta do projeto na página inicial.
-
-Produtor Logado
-Como produtor, quero acessar o sistema com login.
-
-Como produtor, quero cadastrar meus produtos com imagens.
-
-Como produtor, quero editar ou excluir meus próprios produtos.
-
-Funcionalidades Desejáveis
-Como produtor, quero uma confirmação antes de excluir um produto.
-
-Como visitante, quero visualizar a origem dos produtos no mapa.
+Mapa Estático dos Produtores: Exibição de mapa com localização dos produtores.
 
 ✅ Critérios de Aceitação
-📦 Cadastro de Produtos
-Todos os campos obrigatórios devem ser preenchidos: nome, descrição, preço, categoria e imagem.
+Cadastro de Produto
+Todos os campos obrigatórios devem estar preenchidos: nome, descrição, preço, categoria, imagem.
 
-Mensagem de sucesso deve ser exibida após o cadastro.
+Exibir mensagem de sucesso após o cadastro.
 
-O produto deve aparecer automaticamente na vitrine pública.
+Produto aparece automaticamente na vitrine pública.
 
-🧩 Filtro de Categorias
-O filtro deve funcionar dinamicamente (sem recarregar a página).
+Filtro por Categoria
+O filtro deve funcionar sem recarregar a página.
 
-Mensagem informativa caso não existam produtos na categoria selecionada.
-
-📌 Acompanhamento do Projeto
-Acompanhe o progresso pelo quadro no Trello:
-[🔗 Link para o Trello](https://trello.com/invite/b/68745d732c998e59d120e4ab/ATTI34ee12b6a3e5cd83d81deb1d6637314f86DCD379/projeto-ecomarket)
+Exibir mensagem caso não haja produtos na categoria escolhida.
+🔗 Acesso ao Trello
+(https://trello.com/invite/b/68745d732c998e59d120e4ab/ATTI34ee12b6a3e5cd83d81deb1d6637314f86DCD379/projeto-ecomarket)

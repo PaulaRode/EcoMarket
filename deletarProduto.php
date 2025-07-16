@@ -7,8 +7,7 @@ include_once './classes/Produto.php';
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    $database = new DataBase();
-    $db = $database->getConnection();
+    $db = DataBase::getConnection();
 
     $produto = new Produto($db);
 

@@ -13,6 +13,25 @@ if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
 
 $usuario = null;
 $produtos = [];
+$mensagem = '';
+
+// Verificar mensagens de feedback
+if (isset($_GET['msg'])) {
+    switch ($_GET['msg']) {
+        case 'editado':
+            $mensagem = '<div class="alert-success">✅ Produto editado com sucesso!</div>';
+            break;
+        case 'excluido':
+            $mensagem = '<div class="alert-success">✅ Produto excluído com sucesso!</div>';
+            break;
+        case 'criado':
+            $mensagem = '<div class="alert-success">✅ Produto criado com sucesso!</div>';
+            break;
+        case 'erro':
+            $mensagem = '<div class="alert-error">❌ Erro ao processar a operação.</div>';
+            break;
+    }
+}
 
 // Buscar dados do usuário logado
 if (isset($_SESSION['id'])) {
@@ -121,6 +140,23 @@ if (isset($_SESSION['id'])) {
             color: var(--verde-principal);
             font-weight: 600;
         }
+        .edit-user-btn {
+            background: var(--verde-medio);
+            color: var(--verde-escuro);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.2s;
+            margin-right: 8px;
+        }
+        .edit-user-btn:hover {
+            background: var(--verde-principal);
+            color: var(--branco);
+            transform: translateY(-2px);
+        }
         .logout-btn {
             background: #e57373;
             color: white;
@@ -166,6 +202,26 @@ if (isset($_SESSION['id'])) {
         }
         .add-product-btn:hover {
             background: linear-gradient(90deg, var(--verde-principal), var(--verde-medio));
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 18px rgba(56, 142, 60, 0.18);
+        }
+        .view-products-btn {
+            background: linear-gradient(90deg, var(--verde-secundario), var(--verde-principal));
+            color: var(--branco);
+            border: none;
+            padding: 15px 32px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.13em;
+            font-weight: 700;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(56, 142, 60, 0.10);
+        }
+        .view-products-btn:hover {
+            background: linear-gradient(90deg, var(--verde-principal), var(--verde-secundario));
             transform: translateY(-2px) scale(1.04);
             box-shadow: 0 4px 18px rgba(56, 142, 60, 0.18);
         }
@@ -369,6 +425,168 @@ if (isset($_SESSION['id'])) {
             font-size: 1em;
             font-weight: 600;
         }
+        
+        /* Alertas de feedback */
+        .alert-success, .alert-error {
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #a5d6a7;
+        }
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #ef9a9a;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Modal de Produtos */
+        .modal-produtos {
+            background: var(--branco);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal-produtos h3 {
+            color: var(--verde-escuro);
+            margin-bottom: 24px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        .produtos-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .produto-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--verde-claro);
+            border-radius: 12px;
+            border: 1px solid var(--verde-medio);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .produto-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 142, 60, 0.15);
+        }
+        .produto-imagem {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        .produto-detalhes {
+            flex: 1;
+        }
+        .produto-detalhes h4 {
+            color: var(--verde-escuro);
+            margin: 0 0 8px 0;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+        .produto-detalhes p {
+            color: var(--cinza-texto);
+            margin: 0 0 8px 0;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .produto-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .produto-info .preco {
+            color: var(--verde-principal);
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        .produto-info .categoria {
+            background: var(--verde-medio);
+            color: var(--verde-escuro);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .produto-acoes {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .btn-edit-small, .btn-delete-small {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-edit-small {
+            background: var(--amarelo-suave);
+            color: #fbc02d;
+            border: 1px solid #fbc02d;
+        }
+        .btn-edit-small:hover {
+            background: #fff9c4;
+            color: #e65100;
+            border-color: #e65100;
+            transform: scale(1.1);
+        }
+        .btn-delete-small {
+            background: var(--vermelho-suave);
+            color: #e57373;
+            border: 1px solid #e57373;
+        }
+        .btn-delete-small:hover {
+            background: #ffcdd2;
+            color: #b71c1c;
+            border-color: #b71c1c;
+            transform: scale(1.1);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--cinza-texto);
+        }
+        .empty-state h4 {
+            color: var(--verde-escuro);
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+        .empty-state p {
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
         @media (max-width: 900px) {
             .container { padding: 8px; }
             .header, .actions-bar { flex-direction: column; text-align: center; }
@@ -381,6 +599,10 @@ if (isset($_SESSION['id'])) {
             .product-image { width: 100%; height: 180px; border-radius: 0 0 20px 20px; border-right: 0; }
             .product-actions { flex-direction: row; justify-content: flex-end; margin: 14px 0 0 0; }
             .product-info { padding: 18px 12px 10px 12px; }
+            .modal-produtos { padding: 20px; margin: 10px; }
+            .produto-item { flex-direction: column; text-align: center; }
+            .produto-acoes { justify-content: center; }
+            .actions-bar > div:first-child { flex-direction: column; gap: 8px; }
         }
         @media (max-width: 500px) {
             .header h1 { font-size: 1.1em; }
@@ -398,6 +620,7 @@ if (isset($_SESSION['id'])) {
             <div class="user-info">
                 <?php if ($usuario): ?>
                     <span>Olá, <?php echo htmlspecialchars($usuario['nome']); ?></span>
+                    <button class="edit-user-btn" onclick="editarUsuario()">👤 Editar Perfil</button>
                     <button class="logout-btn" onclick="logout()">Sair</button>
                 <?php else: ?>
                     <span>Visualizando todos os produtos</span>
@@ -407,10 +630,19 @@ if (isset($_SESSION['id'])) {
             <a href="index.php" class="dashboard-btn voltar-btn">← Voltar para Vitrine</a>
         </div>
         
+        <?php if ($mensagem): ?>
+            <?php echo $mensagem; ?>
+        <?php endif; ?>
+        
         <div class="actions-bar">
-            <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
-                ➕ Adicionar Produto
-            </button>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
+                    ➕ Adicionar Produto
+                </button>
+                <button class="view-products-btn" onclick="abrirModalProdutos()">
+                    📦 Ver Meus Produtos
+                </button>
+            </div>
             <div class="stats">
                 <div class="stat-item">
                     <div class="stat-number"><?php echo count($produtos); ?></div>
@@ -422,38 +654,50 @@ if (isset($_SESSION['id'])) {
                 </div>
             </div>
         </div>
-        
-        <?php if (empty($produtos)): ?>
-            <div class="empty-state">
-                <h3>Nenhum produto cadastrado ainda</h3>
-                <p>Comece adicionando seu primeiro produto sustentável!</p>
-                <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
-                    ➕ Adicionar Primeiro Produto
-                </button>
-            </div>
-        <?php else: ?>
-            <div class="products-grid">
-                <?php foreach ($produtos as $produto): ?>
-                    <div class="product-card">
-                        <img src="imagens/<?php echo $produto->imagem; ?>" alt="<?php echo htmlspecialchars($produto->nome); ?>" class="product-image">
-                        <div class="product-info">
-                            <h3 class="product-title"><?php echo htmlspecialchars($produto->nome); ?></h3>
-                            <p class="product-description"><?php echo htmlspecialchars($produto->descricao); ?></p>
-                            <div class="product-price">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></div>
-                            <div class="product-category"><?php echo htmlspecialchars($produto->categoria); ?></div>
-                        </div>
-                        <div class="product-actions">
-                            <button class="btn-edit" onclick="editarProduto(<?php echo $produto->id; ?>)">
-                                ✏️ Alterar
-                            </button>
-                            <button class="btn-delete" onclick="confirmarExclusao(<?php echo $produto->id; ?>, '<?php echo htmlspecialchars($produto->nome); ?>')">
-                                🗑️ Excluir
-                            </button>
-                        </div>
+    </div>
+    
+    <!-- Modal de Produtos do Usuário -->
+    <div class="modal-overlay" id="modalProdutos">
+        <div class="modal-produtos">
+            <button class="close-btn" onclick="fecharModalProdutos()">&times;</button>
+            <h3>📦 Meus Produtos</h3>
+            <div class="produtos-container">
+                <?php if (empty($produtos)): ?>
+                    <div class="empty-state">
+                        <h4>Nenhum produto cadastrado ainda</h4>
+                        <p>Comece adicionando seu primeiro produto sustentável!</p>
+                        <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
+                            ➕ Adicionar Primeiro Produto
+                        </button>
                     </div>
-                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php foreach ($produtos as $produto): ?>
+                        <div class="produto-item">
+                            <img src="<?php echo $produto->imagem ? $produto->imagem : 'https://via.placeholder.com/80x80?text=Produto'; ?>" 
+                                 alt="<?php echo htmlspecialchars($produto->nome); ?>" 
+                                 class="produto-imagem"
+                                 onerror="this.src='https://via.placeholder.com/80x80?text=Produto'">
+                            <div class="produto-detalhes">
+                                <h4><?php echo htmlspecialchars($produto->nome); ?></h4>
+                                <p><?php echo htmlspecialchars($produto->descricao); ?></p>
+                                <div class="produto-info">
+                                    <span class="preco">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></span>
+                                    <span class="categoria"><?php echo htmlspecialchars($produto->categoria); ?></span>
+                                </div>
+                            </div>
+                            <div class="produto-acoes">
+                                <button class="btn-edit-small" onclick="editarProduto(<?php echo $produto->id; ?>)" title="Editar produto">
+                                    ✏️
+                                </button>
+                                <button class="btn-delete-small" onclick="confirmarExclusao(<?php echo $produto->id; ?>, '<?php echo htmlspecialchars($produto->nome); ?>')" title="Excluir produto">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
+        </div>
     </div>
     
     <!-- Modal de confirmação de exclusão -->
@@ -481,8 +725,28 @@ if (isset($_SESSION['id'])) {
             window.location.href = 'login.php';
         }
         
+        function editarUsuario() {
+            window.location.href = 'alterarUsuario.php';
+        }
+        
+        function abrirModalProdutos() {
+            document.getElementById('modalProdutos').classList.add('active');
+        }
+        
+        function fecharModalProdutos() {
+            document.getElementById('modalProdutos').classList.remove('active');
+        }
+        
         function editarProduto(id) {
-            window.location.href = `alterarProduto.php?id=${id}`;
+            // Adicionar feedback visual
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Carregando...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                window.location.href = `alterarProduto.php?id=${id}`;
+            }, 300);
         }
         
         function confirmarExclusao(id, nome) {
@@ -498,15 +762,41 @@ if (isset($_SESSION['id'])) {
         
         function excluirProduto() {
             if (produtoIdParaExcluir) {
-                window.location.href = `deletarProduto.php?id=${produtoIdParaExcluir}`;
+                // Adicionar feedback visual
+                const btn = document.querySelector('.btn-confirm');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⏳ Excluindo...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = `deletarProduto.php?id=${produtoIdParaExcluir}`;
+                }, 500);
             }
         }
         
-        // Fechar modal ao clicar fora
+        // Fechar modais ao clicar fora
         document.getElementById('modalConfirm').addEventListener('click', function(e) {
             if (e.target === this) {
                 fecharModal();
             }
+        });
+        
+        document.getElementById('modalProdutos').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModalProdutos();
+            }
+        });
+        
+        // Auto-hide para mensagens de alerta
+        const alerts = document.querySelectorAll('.alert-success, .alert-error');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    alert.remove();
+                }, 300);
+            }, 5000);
         });
     </script>
 </body>

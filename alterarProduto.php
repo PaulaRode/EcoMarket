@@ -3,8 +3,7 @@ include_once './config/config.php';
 include_once './classes/DataBase.php';
 include_once './classes/Produto.php';
 
-$database = new DataBase();
-$db = $database->getConnection();
+$db = DataBase::getConnection();
 $produtoObj = new Produto($db);
 
 // Verifica se o ID foi passado
@@ -20,11 +19,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
     $descricao = $_POST['descricao'];
     $preco = $_POST['preco'];
+    $categoria = $_POST['categoria'];
 
-    // Converte a categoria textual para um ID (você pode mudar isso para vir do banco)
-    $categoria = $_POST['categoria'] === 'Hortifruti' ? 1 : 2;
+    // Processar upload da nova imagem
+    $novaImagem = null;
+    if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
+        $pastaDestino = "uploads/";
+        if (!is_dir($pastaDestino)) {
+            mkdir($pastaDestino, 0755, true);
+        }
 
-    if ($produtoObj->atualizar($id, $nome, $descricao, $preco, $categoria)) {
+        $nomeOriginal = basename($_FILES['imagem']['name']);
+        $novoNome = time() . "_" . preg_replace('/[^a-zA-Z0-9._-]/', '', $nomeOriginal);
+        $caminhoCompleto = $pastaDestino . $novoNome;
+
+        if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoCompleto)) {
+            $novaImagem = $caminhoCompleto;
+        }
+    }
+
+    if ($produtoObj->atualizar($id, $nome, $descricao, $preco, $categoria, $novaImagem)) {
         header("Location: dashboard.php?msg=editado");
         exit();
     } else {
@@ -53,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="container-cadastro">
-        <img src="./assests/logo.png" alt="Logo da Empresa" class="logo">
+        <img src="./assets/logo.png" alt="Logo da Empresa" class="logo">
 
         <h1>Alterar Produto</h1>
         <form method="post" enctype="multipart/form-data">
@@ -68,13 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <label>Categoria:</label><br>
             <select name="categoria" required>
-                <option value="Limpeza" <?= $produto['categoria'] == 'Limpeza' ? 'selected' : '' ?>>Limpeza</option>
-                <option value="Alimentos" <?= $produto['categoria'] == 'Alimentos' ? 'selected' : '' ?>>Alimentos</option>
+                <option value="1" <?= $produto['categoria'] == 'alimentos' ? 'selected' : '' ?>>Alimentos</option>
+                <option value="2" <?= $produto['categoria'] == 'limpeza' ? 'selected' : '' ?>>Limpeza</option>
             </select>
 
             <label>Imagem atual:</label><br>
-            <?php if ($produto['imagem']): ?>
-                <img src="./<?= htmlspecialchars($produto['imagem']) ?>" width="150">
+            <?php if (isset($produto['imagem']) && $produto['imagem']): ?>
+                <img src="<?= htmlspecialchars($produto['imagem']) ?>" width="150" style="border-radius: 8px; border: 1px solid #ddd;">
+            <?php else: ?>
+                <p>Nenhuma imagem cadastrada</p>
             <?php endif; ?>
 
             <label>Nova imagem (opcional):</label><br>

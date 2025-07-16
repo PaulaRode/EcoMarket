@@ -11,8 +11,7 @@ class Usuario  {
         $query = "INSERT INTO " . $this->table_name . " (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $password_hash = password_hash($senha, PASSWORD_BCRYPT);
-        $stmt->bindParam("ssss", $nome, $email, $password_hash, $telefone);
-        $stmt->execute();
+        $stmt->execute([$nome, $email, $password_hash, $telefone]);
         return true; 
     }
 
@@ -51,6 +50,14 @@ class Usuario  {
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$id]);
         return $stmt->fetch();
+    }
+
+    public function verificarSenha($id, $senha) {
+        $usuario = $this->buscarPorId($id);
+        if ($usuario && password_verify($senha, $usuario['senha'])) {
+            return true;
+        }
+        return false;
     }
 
 

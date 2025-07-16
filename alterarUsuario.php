@@ -7,17 +7,17 @@ require_once './classes/DataBase.php';
 require_once './classes/Usuario.php';
 
 session_start();
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: Usuario.php');
+if (!isset($_SESSION['id'])) {
+    header('Location: login.php');
     exit();
 }
 
-$db = (new DataBase())->getConnection();
+$db = DataBase::getConnection();
 $usuario = new Usuario($db);
 $mensagem = '';
 
 // Carrega dados do usuário atual
-$dadosUsuario = $usuario->buscarPorId($_SESSION['usuario_id']);
+$dadosUsuario = $usuario->buscarPorId($_SESSION['id']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
@@ -39,22 +39,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 !preg_match('/[\W_]/', $nova_senha)
             ) {
                 $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>A nova senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.</div>";
-            } else if (!$usuario->verificarSenha($_SESSION['usuario_id'], $senha_atual)) {
+            } else if (!$usuario->verificarSenha($_SESSION['id'], $senha_atual)) {
                 $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>Senha atual incorreta.</div>";
             } else {
                 // Atualiza com nova senha
-                if ($usuario->atualizar($_SESSION['usuario_id'], $nome, $email, $telefone, $nova_senha)) {
+                if ($usuario->atualizar($_SESSION['id'], $nome, $email, $nova_senha, $telefone)) {
                     $mensagem = "<div style='color: #388e3c; margin-bottom: 15px; padding: 10px; background-color: #e8f5e9; border-radius: 5px; text-align: center;'>Dados atualizados com sucesso!</div>";
-                    $dadosUsuario = $usuario->buscarPorId($_SESSION['usuario_id']); // Atualiza dados locais
+                    $dadosUsuario = $usuario->buscarPorId($_SESSION['id']); // Atualiza dados locais
                 } else {
                     $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>Erro ao atualizar dados.</div>";
                 }
             }
         } else {
             // Atualiza sem alterar senha
-            if ($usuario->atualizar($_SESSION['usuario_id'], $nome, $email, $telefone)) {
+            if ($usuario->atualizar($_SESSION['id'], $nome, $email, $dadosUsuario['senha'], $telefone)) {
                 $mensagem = "<div style='color: #388e3c; margin-bottom: 15px; padding: 10px; background-color: #e8f5e9; border-radius: 5px; text-align: center;'>Dados atualizados com sucesso!</div>";
-                $dadosUsuario = $usuario->buscarPorId($_SESSION['usuario_id']); // Atualiza dados locais
+                $dadosUsuario = $usuario->buscarPorId($_SESSION['id']); // Atualiza dados locais
             } else {
                 $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>Erro ao atualizar dados.</div>";
             }
@@ -159,12 +159,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.95rem;
             display: none;
         }
+        .btn-excluir {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            width: 90%;
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+            transition: background 0.2s;
+        }
+        .btn-excluir:hover {
+            background: #b71c1c;
+        }
     </style>
 </head>
 <body>
     <div class="card-alterar">
         <div class="eco-logo">
-            <img src="assets/logo/logoEco.png" alt="EcoMarket Logo">
+            <img src="assets/logo.png" alt="EcoMarket Logo">
         </div>
         <?= $mensagem ?>
         <form method="POST" id="form-alterar">
@@ -181,7 +198,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <button type="submit" class="btn-alterar">Salvar Alterações</button>
-            <a href="perfil.php" class="voltar-link">Voltar ao perfil</a>
+            <a href="dashboard.php" class="voltar-link">Voltar ao Dashboard</a>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; width: 90%; margin-left: auto; margin-right: auto;">
+                <h3 style="margin-bottom: 15px; color: #d32f2f; font-size: 1rem; text-align: center;">Zona de Perigo</h3>
+                <button type="button" id="btn-excluir" class="btn-excluir">Excluir Conta</button>
+            </div>
         </form>
     </div>
     <script>
@@ -233,6 +255,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Limita a 11 caracteres
                 if (this.value.length > 11) {
                     this.value = this.value.slice(0, 11);
+                }
+            });
+            
+            // Funcionalidade do botão excluir
+            const btnExcluir = document.getElementById('btn-excluir');
+            btnExcluir.addEventListener('click', function() {
+                if (confirm('ATENÇÃO: Você realmente tem certeza que deseja excluir sua conta?\n\nEsta ação é IRREVERSÍVEL e todos os seus dados serão perdidos permanentemente.')) {
+                    if (confirm('ÚLTIMA CHANCE: Tem certeza absoluta que deseja excluir sua conta?\n\nEsta ação não pode ser desfeita.')) {
+                        window.location.href = 'deletarUsuario.php';
+                    }
                 }
             });
         });

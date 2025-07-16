@@ -4,11 +4,10 @@
 try {
     require_once __DIR__ . "/../classes/DataBase.php";
     
-    $database = new DataBase();
-    $conn = $database->getConnection();
+    $conn = DataBase::getConnection();
     
     if(!$conn){
-        throw new Exception("Connection failed: " . mysqli_connect_error());
+        throw new Exception("Connection failed");
     }
 } catch (Exception $e) {
     throw new Exception("Erro na configuração do banco: " . $e->getMessage());

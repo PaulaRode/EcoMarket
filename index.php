@@ -233,6 +233,120 @@ if ($categoriaSelecionada) {
             background: linear-gradient(90deg, #66bb6a, #388e3c);
             transform: scale(1.04);
         }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .modal h3 {
+            color: #388e3c;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+        .modal .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .modal .close-btn:hover {
+            color: #388e3c;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #388e3c;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #388e3c;
+        }
+        .modal .btn-submit {
+            background: linear-gradient(90deg, #388e3c, #66bb6a);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .modal .btn-submit:hover {
+            background: linear-gradient(90deg, #66bb6a, #388e3c);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1c3c27;
+            color: #fff;
+            padding: 40px 0 20px 0;
+            margin-top: 60px;
+        }
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        .footer-section h4 {
+            color: #66bb6a;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+        .footer-section a:hover {
+            color: #66bb6a;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #2d4a3a;
+            color: #999;
+        }
+        
         /* Responsividade */
         @media (max-width: 900px) {
             .container { max-width: 98vw; padding: 10px; }
@@ -247,6 +361,9 @@ if ($categoriaSelecionada) {
             .card { width: 98vw; max-width: 340px; padding: 12px; }
             .card img { width: 90px; height: 90px; }
             .topbar .logo-area span { font-size: 1.2em; }
+            .modal { padding: 20px; margin: 10px; }
+            .footer-content { grid-template-columns: 1fr; gap: 20px; }
+            .footer { padding: 20px 0 10px 0; }
         }
     </style>
 </head>
@@ -257,7 +374,8 @@ if ($categoriaSelecionada) {
             <span>EcoMarket</span>
         </div>
         <div class="nav-links">
-            <a href="sobre.php">Contato</a>
+            <a href="sobre.php">Sobre</a>
+            <button onclick="abrirFormulario()" style="background: none; border: none; cursor: pointer; color: #388e3c; font-weight: 700; font-size: 1.08em; padding: 0 10px; border-radius: 20px; transition: background 0.18s;">Contato</button>
             <a href="login.php" class="login-btn">Login</a>
         </div>
     </div>
@@ -281,18 +399,162 @@ if ($categoriaSelecionada) {
         <div class="vitrine">
             <?php foreach ($produtos as $produto): ?>
                 <div class="card">
-                    <img src="<?php echo $produto->imagem ? 'imagens/' . $produto->imagem : 'https://via.placeholder.com/120x120?text=Produto'; ?>" alt="<?php echo htmlspecialchars($produto->nome); ?>">
+                    <img src="<?php echo $produto->imagem ? $produto->imagem : 'https://via.placeholder.com/120x120?text=Produto'; ?>" alt="<?php echo htmlspecialchars($produto->nome); ?>">
                     <h2><?php echo htmlspecialchars($produto->nome); ?></h2>
                     <p><?php echo htmlspecialchars($produto->descricao); ?></p>
                     <div class="preco">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></div>
                     <div class="categoria">Categoria: <?php echo htmlspecialchars($produto->categoria); ?></div>
                     <div class="card-actions">
-                        <button class="comprar-btn" disabled>Comprar</button>
+                        <button class="comprar-btn" onclick="abrirModalProduto(<?php echo htmlspecialchars(json_encode($produto)); ?>)">Comprar</button>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🌱 EcoMarket</h4>
+                <p>Conectando você a produtos sustentáveis e naturais. Apoiamos pequenos produtores locais e promovemos o consumo consciente.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Contato</h4>
+                <p>Email: contato@ecomarket.com</p>
+                <p>Telefone: (51) 99999-9999</p>
+                <p>Endereço: Rua das Flores, 123 - Porto Alegre/RS</p>
+            </div>
+            <div class="footer-section">
+                <h4>🔗 Links Úteis</h4>
+                <p><a href="sobre.php">Sobre Nós</a></p>
+                <p><a href="#" onclick="abrirFormulario()">Fale Conosco</a></p>
+                <p><a href="login.php">Área do Produtor</a></p>
+            </div>
+            <div class="footer-section">
+                <h4>🌍 Sustentabilidade</h4>
+                <p>Comprometidos com o meio ambiente e com o desenvolvimento sustentável da nossa comunidade.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 EcoMarket. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Formulário de Contato -->
+    <div class="modal-overlay" id="modalFormulario">
+        <div class="modal">
+            <button class="close-btn" onclick="fecharModal('modalFormulario')">&times;</button>
+            <h3>📧 Fale Conosco</h3>
+            <form id="formContato">
+                <div class="form-group">
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone:</label>
+                    <input type="tel" id="telefone" name="telefone">
+                </div>
+                <div class="form-group">
+                    <label for="assunto">Assunto:</label>
+                    <select id="assunto" name="assunto" required>
+                        <option value="">Selecione um assunto</option>
+                        <option value="duvida">Dúvida sobre Produtos</option>
+                        <option value="sugestao">Sugestão</option>
+                        <option value="reclamacao">Reclamação</option>
+                        <option value="parceria">Proposta de Parceria</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mensagem">Mensagem:</label>
+                    <textarea id="mensagem" name="mensagem" rows="5" required placeholder="Digite sua mensagem aqui..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Enviar Mensagem</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Informações do Produto -->
+    <div class="modal-overlay" id="modalProduto">
+        <div class="modal">
+            <button class="close-btn" onclick="fecharModal('modalProduto')">&times;</button>
+            <h3 id="produtoTitulo">Informações do Produto</h3>
+            <div id="produtoConteudo">
+                <!-- Conteúdo será preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funções para os modais
+        function abrirFormulario() {
+            document.getElementById('modalFormulario').classList.add('active');
+        }
+
+        function abrirModalProduto(produto) {
+            const modal = document.getElementById('modalProduto');
+            const titulo = document.getElementById('produtoTitulo');
+            const conteudo = document.getElementById('produtoConteudo');
+            
+            titulo.textContent = produto.nome;
+            conteudo.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="${produto.imagem ? produto.imagem : 'https://via.placeholder.com/200x200?text=Produto'}" 
+                         alt="${produto.nome}" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>Descrição:</strong>
+                    <p>${produto.descricao}</p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>Preço:</strong>
+                    <p style="color: #388e3c; font-size: 1.2em; font-weight: bold;">R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <strong>Categoria:</strong>
+                    <p>${produto.categoria}</p>
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="comprarProduto(${produto.id})" style="background: linear-gradient(90deg, #388e3c, #66bb6a); color: #fff; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                        🛒 Finalizar Compra
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function comprarProduto(produtoId) {
+            alert('Funcionalidade de compra será implementada em breve! Produto ID: ' + produtoId);
+            fecharModal('modalProduto');
+        }
+
+        // Fechar modais ao clicar fora
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Envio do formulário de contato
+        document.getElementById('formContato').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+            fecharModal('modalFormulario');
+            this.reset();
+        });
+    </script>
 
 </body>
 </html>

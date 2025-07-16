@@ -1,10 +1,18 @@
 <?php
+session_start();
+
+// Verificar se o usuário está logado - OBRIGATÓRIO
+if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
+    // Redirecionar para login se não estiver logado
+    header('Location: login.php');
+    exit;
+}
+
 include_once './classes/DataBase.php';
 include_once './classes/Produto.php';
 
 // Cria conexão PDO com o banco
-$database = new DataBase();
-$db = $database->getConnection();
+$db = DataBase::getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $produto = new Produto($db);
@@ -37,9 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Executa cadastro do produto com o caminho da imagem (pode ser null)
         if ($produto->criar($nome, $descricao, $preco, $categoria, $imagemNome)) {
-            echo "<script>alert('Produto cadastrado com sucesso!');</script>";
+            header("Location: dashboard.php?msg=criado");
+            exit();
         } else {
-            echo "<script>alert('Erro ao cadastrar produto.');</script>";
+            header("Location: dashboard.php?msg=erro");
+            exit();
         }
     }
 }
@@ -61,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="container-cadastro">
-        <img src="./assests/logo.png" alt="Logo da Empresa" class="logo">
+        <img src="./assets/logo.png" alt="Logo da Empresa" class="logo">
         <h1>Cadastrar Produto</h1>
         <form method="POST" enctype="multipart/form-data">
             <label for="nome">Nome do Produto:</label>

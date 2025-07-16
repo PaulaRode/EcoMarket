@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="card-cadastro">
         <div class="eco-logo">
-            <img src="assets/logo/logoEco.png" alt="EcoMarket Logo">
+            <img src="assets/logo.png" alt="EcoMarket Logo">
         </div>
         <?= $mensagem ?>
         <form method="POST" style="display: flex; flex-direction: column; align-items: center;" id="form-cadastro">

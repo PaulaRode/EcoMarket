@@ -2,7 +2,7 @@
 class DataBase {
     public static function getConnection() {
         $host = 'localhost';
-        $db   = 'EcoMarket';
+        $db   = 'ecomarket';
         $user = 'root'; // ajuste conforme necessário
         $pass = '';     // ajuste conforme necessário
         $charset = 'utf8mb4';

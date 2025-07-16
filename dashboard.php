@@ -442,7 +442,6 @@ if (isset($_SESSION['id'])) {
                             <div class="product-price">R$ <?php echo number_format($produto->preco, 2, ',', '.'); ?></div>
                             <div class="product-category"><?php echo htmlspecialchars($produto->categoria); ?></div>
                         </div>
-                        <?php if ($usuario): ?>
                         <div class="product-actions">
                             <button class="btn-edit" onclick="editarProduto(<?php echo $produto->id; ?>)">
                                 ✏️ Alterar
@@ -451,7 +450,6 @@ if (isset($_SESSION['id'])) {
                                 🗑️ Excluir
                             </button>
                         </div>
-                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>

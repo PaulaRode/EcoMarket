@@ -13,9 +13,10 @@ CREATE TABLE tbUsu (
 ALTER TABLE tbUsu
 MODIFY COLUMN senha VARCHAR(255) NOT NULL;
 
-ALTER TABLE tbUsu
-ADD CONSTRAINT fk_id_produto
-FOREIGN KEY (id_produto) REFERENCES tbProduto(id);
+ALTER TABLE tbProduto
+ADD id_usuario INT NOT NULL,	
+ADD CONSTRAINT id_usuario
+FOREIGN KEY (id_usuario) REFERENCES tbUsu(id);
 UPDATE tbUsu SET senha = PASSWORD(senha);
 
 /* Tabela de Produtos */
@@ -37,5 +38,12 @@ CREATE TABLE tbCategorias (
 	id INT PRIMARY KEY AUTO_INCREMENT ,
     nome VARCHAR(100) NOT NULL
 );
+
+ALTER TABLE tbUsu
+DROP FOREIGN KEY fk_id_produto;
+
+
+ALTER TABLE tbUsu
+DROP COLUMN id_produto;
 
 

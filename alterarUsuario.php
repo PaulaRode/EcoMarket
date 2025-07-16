@@ -3,88 +3,60 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'config/config.php'; // ajustar o caminho do banco
+require_once './classes/DataBase.php';
+require_once './classes/Usuario.php';
 
 session_start();
-
-// Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
+    header('Location: Usuario.php');
     exit();
 }
 
+$db = (new DataBase())->getConnection();
+$usuario = new Usuario($db);
 $mensagem = '';
-$usuario = null;
 
-// Carrega dados do usuário
-$stmt = $pdo->prepare("SELECT id, nome, email FROM usuarios WHERE id = ?");
-$stmt->execute([$_SESSION['usuario_id']]);
-$usuario = $stmt->fetch();
+// Carrega dados do usuário atual
+$dadosUsuario = $usuario->buscarPorId($_SESSION['usuario_id']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
     $email = $_POST['email'];
+    $telefone = $_POST['telefone'];
     $senha_atual = $_POST['senha_atual'] ?? '';
     $nova_senha = $_POST['nova_senha'] ?? '';
-    $confirmar_senha = $_POST['confirmar_senha'] ?? '';
-
-    // Verifica se o e-mail foi alterado
-    if ($email !== $usuario['email']) {
-        // Verifica se o novo e-mail já existe
-        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ? AND id != ?");
-        $stmt->execute([$email, $usuario['id']]);
-        if ($stmt->fetch()) {
-            $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>E-mail já cadastrado por outro usuário.</div>";
-        }
-    }
-
-    // Se não houve erro com o e-mail, prossegue
-    if (empty($mensagem)) {
+    
+    // Validação do telefone
+    if (!preg_match('/^\d{10,11}$/', $telefone)) {
+        $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>O telefone deve conter apenas números e ter 10 ou 11 dígitos.</div>";
+    } else {
         // Verifica se quer alterar a senha
         if (!empty($nova_senha)) {
-            // Valida a senha atual
-            $stmt = $pdo->prepare("SELECT senha FROM usuarios WHERE id = ?");
-            $stmt->execute([$usuario['id']]);
-            $usuario_db = $stmt->fetch();
-            
-            if (!password_verify($senha_atual, $usuario_db['senha'])) {
-                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Senha atual incorreta.</div>";
-            } 
-            // Validação da nova senha
-            elseif (
+            // Valida a nova senha
+            if (
                 strlen($nova_senha) < 8 ||
                 !preg_match('/[A-Z]/', $nova_senha) ||
                 !preg_match('/[\W_]/', $nova_senha)
             ) {
-                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>A nova senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.</div>";
-            } elseif ($nova_senha !== $confirmar_senha) {
-                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>As novas senhas não coincidem.</div>";
+                $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>A nova senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.</div>";
+            } else if (!$usuario->verificarSenha($_SESSION['usuario_id'], $senha_atual)) {
+                $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>Senha atual incorreta.</div>";
             } else {
-                $senhaHash = password_hash($nova_senha, PASSWORD_BCRYPT);
-                $atualizarSenha = true;
+                // Atualiza com nova senha
+                if ($usuario->atualizar($_SESSION['usuario_id'], $nome, $email, $telefone, $nova_senha)) {
+                    $mensagem = "<div style='color: #388e3c; margin-bottom: 15px; padding: 10px; background-color: #e8f5e9; border-radius: 5px; text-align: center;'>Dados atualizados com sucesso!</div>";
+                    $dadosUsuario = $usuario->buscarPorId($_SESSION['usuario_id']); // Atualiza dados locais
+                } else {
+                    $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>Erro ao atualizar dados.</div>";
+                }
             }
-        }
-
-        // Se não houve erros, atualiza os dados
-        if (empty($mensagem)) {
-            if (isset($atualizarSenha)) {
-                $stmt = $pdo->prepare("UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?");
-                $result = $stmt->execute([$nome, $email, $senhaHash, $usuario['id']]);
+        } else {
+            // Atualiza sem alterar senha
+            if ($usuario->atualizar($_SESSION['usuario_id'], $nome, $email, $telefone)) {
+                $mensagem = "<div style='color: #388e3c; margin-bottom: 15px; padding: 10px; background-color: #e8f5e9; border-radius: 5px; text-align: center;'>Dados atualizados com sucesso!</div>";
+                $dadosUsuario = $usuario->buscarPorId($_SESSION['usuario_id']); // Atualiza dados locais
             } else {
-                $stmt = $pdo->prepare("UPDATE usuarios SET nome = ?, email = ? WHERE id = ?");
-                $result = $stmt->execute([$nome, $email, $usuario['id']]);
-            }
-
-            if ($result) {
-                $mensagem = "<div style='color: #388e3c; margin-bottom: 10px;'>Dados atualizados com sucesso!</div>";
-                // Atualiza os dados na sessão
-                $_SESSION['usuario_nome'] = $nome;
-                // Recarrega os dados do usuário
-                $stmt = $pdo->prepare("SELECT id, nome, email FROM usuarios WHERE id = ?");
-                $stmt->execute([$_SESSION['usuario_id']]);
-                $usuario = $stmt->fetch();
-            } else {
-                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Erro ao atualizar dados.</div>";
+                $mensagem = "<div style='color: #d32f2f; margin-bottom: 15px; padding: 10px; background-color: #ffebee; border-radius: 5px; text-align: center;'>Erro ao atualizar dados.</div>";
             }
         }
     }
@@ -94,13 +66,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Alterar Dados - EcoMarket</title>
+    <title>Editar Perfil - EcoMarket</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles/cadastrarUsuario.css">
     <style>
         body {
             background: #eafaf1;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .card-alterar {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+            padding: 30px 25px 20px 25px;
+            max-width: 350px;
+            margin: 60px auto;
         }
         .eco-logo {
             display: flex;
@@ -112,40 +93,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 110px;
             margin-bottom: 10px;
         }
-        .eco-logo .eco-title {
-            color: #219150;
-            font-size: 2rem;
-            font-weight: bold;
-            line-height: 1;
-        }
-        .card-cadastro {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            padding: 30px 25px 20px 25px;
-            max-width: 350px;
-            margin: 60px auto;
-        }
         .form-control {
             border-radius: 5px;
             border: 1px solid #b2dfdb;
             margin-bottom: 15px;
             padding: 10px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
         }
-        .btn-cadastrar {
+        .btn-alterar {
             background: #219150;
             color: #fff;
             border: none;
             border-radius: 5px;
-            width: 100%;
+            width: 90%;
             padding: 10px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            margin: 10px auto;
+            display: block;
             transition: background 0.2s;
         }
-        .btn-cadastrar:hover {
+        .btn-alterar:hover {
             background: #176c3a;
         }
         .voltar-link {
@@ -162,58 +134,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #e0e0e0;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .senha-section h3 {
+            margin-bottom: 15px;
+            color: #219150;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .senha-section small {
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        #erro-telefone {
+            color: #d32f2f;
+            width: 90%;
+            margin: 0 auto 15px auto;
+            text-align: left;
+            font-size: 0.95rem;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="card-cadastro">
+    <div class="card-alterar">
         <div class="eco-logo">
-            <img src="assets/logo/eco logo.jpeg" alt="EcoMarket Logo">
-            
+            <img src="assets/logo/logoEco.png" alt="EcoMarket Logo">
         </div>
         <?= $mensagem ?>
-        <form method="POST" style="display: flex; flex-direction: column; align-items: center;">
-            <input type="text" class="form-control" name="nome" placeholder="Nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required style="width: 90%; margin: 8px 0;">
-            <input type="email" class="form-control" name="email" placeholder="E-mail" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required style="width: 90%; margin: 8px 0;">
+        <form method="POST" id="form-alterar">
+            <input type="text" class="form-control" name="nome" placeholder="Nome" value="<?= htmlspecialchars($dadosUsuario['nome'] ?? '') ?>" required>
+            <input type="email" class="form-control" name="email" placeholder="E-mail" value="<?= htmlspecialchars($dadosUsuario['email'] ?? '') ?>" required>
+            <input type="tel" class="form-control" name="telefone" placeholder="Telefone" value="<?= htmlspecialchars($dadosUsuario['telefone'] ?? '') ?>" maxlength="11" required>
+            <div id="erro-telefone">O telefone deve conter apenas números e ter 10 ou 11 dígitos.</div>
             
-            <div class="senha-section" style="width: 90%;">
-                <h3 style="margin-bottom: 15px; color: #219150; font-size: 1rem;">Alterar Senha</h3>
-                <input type="password" class="form-control" name="senha_atual" placeholder="Senha Atual" style="width: 100%; margin: 8px 0;">
-                <input type="password" class="form-control" name="nova_senha" placeholder="Nova Senha" style="width: 100%; margin: 8px 0;">
-                <input type="password" class="form-control" name="confirmar_senha" placeholder="Confirmar Nova Senha" style="width: 100%; margin: 8px 0;">
-                <small style="display: block; margin-bottom: 10px; color: #666;">Deixe em branco se não quiser alterar</small>
+            <div class="senha-section">
+                <h3>Alterar Senha</h3>
+                <input type="password" class="form-control" name="senha_atual" placeholder="Senha Atual">
+                <input type="password" class="form-control" name="nova_senha" placeholder="Nova Senha">
+                <small>Deixe em branco se não quiser alterar a senha</small>
             </div>
             
-            <button type="submit" class="btn-cadastrar" style="width: 90%;">Salvar Alterações</button>
+            <button type="submit" class="btn-alterar">Salvar Alterações</button>
             <a href="perfil.php" class="voltar-link">Voltar ao perfil</a>
         </form>
     </div>
     <script>
-        // Validação de senha no front-end
-        document.querySelector('form').addEventListener('submit', function (e) {
-            const novaSenha = document.querySelector('input[name="nova_senha"]').value;
-            const confirmarSenha = document.querySelector('input[name="confirmar_senha"]').value;
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('form-alterar');
+            const erroTelefone = document.getElementById('erro-telefone');
+            const campoTelefone = form.querySelector('input[name="telefone"]');
             
-            // Só valida se a nova senha foi preenchida
-            if (novaSenha.trim() !== '') {
-                const regexMaiuscula = /[A-Z]/;
-                const regexEspecial = /[\W_]/;
+            // Validação do formulário
+            form.addEventListener('submit', function(e) {
+                const telefone = campoTelefone.value;
+                const novaSenha = form.querySelector('input[name="nova_senha"]').value;
+                let erro = false;
                 
-                if (
-                    novaSenha.length < 8 ||
-                    !regexMaiuscula.test(novaSenha) ||
-                    !regexEspecial.test(novaSenha)
-                ) {
-                    alert('A nova senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.');
-                    e.preventDefault();
-                    return;
+                // Validação do telefone
+                if (!/^\d{10,11}$/.test(telefone)) {
+                    erroTelefone.style.display = 'block';
+                    erro = true;
+                } else {
+                    erroTelefone.style.display = 'none';
                 }
                 
-                if (novaSenha !== confirmarSenha) {
-                    alert('As novas senhas não coincidem.');
+                // Validação da senha (se foi preenchida)
+                if (novaSenha.trim() !== '') {
+                    const regexMaiuscula = /[A-Z]/;
+                    const regexEspecial = /[\W_]/;
+                    
+                    if (
+                        novaSenha.length < 8 ||
+                        !regexMaiuscula.test(novaSenha) ||
+                        !regexEspecial.test(novaSenha)
+                    ) {
+                        alert('A nova senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.');
+                        erro = true;
+                    }
+                }
+                
+                if (erro) {
                     e.preventDefault();
                 }
-            }
+            });
+            
+            // Validação do telefone em tempo real
+            campoTelefone.addEventListener('input', function() {
+                // Permite apenas números
+                if (!/^\d*$/.test(this.value)) {
+                    this.value = this.value.replace(/\D/g, '');
+                }
+                // Limita a 11 caracteres
+                if (this.value.length > 11) {
+                    this.value = this.value.slice(0, 11);
+                }
+            });
         });
     </script>
 </body>

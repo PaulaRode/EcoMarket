@@ -317,20 +317,11 @@ Este projeto foi desenvolvido para fins educacionais e comerciais.
 
 **EcoMarket Team** - Desenvolvimento inicial
 
-## 🙏 Agradecimentos
-
-- **FontAwesome** - Ícones
-- **Google Fonts** (Montserrat) - Tipografia
-- **XAMPP** - Ambiente de desenvolvimento
-- **PHP Community** - Suporte e documentação
-
 ## 📞 Suporte
 
 - **Issues**: GitHub Issues
 - **Documentação**: README.md
 - **Teste de Conexão**: `test_connection.php`
-
-## ⭐ Se este projeto te ajudou, considere dar uma estrela no repositório!
 
 ---
 

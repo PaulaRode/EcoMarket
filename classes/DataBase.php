@@ -1,26 +1,22 @@
-<?php 
-
+<?php
 class DataBase {
-    private $host = "localhost";
-    private $db_name = "EcoMarket";
-    private $username = "root";
-    private $password = "";
-    public $conn;
+    public static function getConnection() {
+        $host = 'localhost';
+        $db   = 'EcoMarket';
+        $user = 'root'; // ajuste conforme necessário
+        $pass = '';     // ajuste conforme necessário
+        $charset = 'utf8mb4';
 
-
-    public function getConnection() {
-        $this->conn = null;
+        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+        $options = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
         try {
-            $this->conn = new mysqli($this->host, $this->username, $this->password, $this->db_name);
-            if ($this->conn->connect_error) {
-                throw new Exception("Connection failed: " . $this->conn->connect_error);
-            }
-        } catch (Exception $e) {
-            die("Connection failed: " . $e->getMessage());
+            return new PDO($dsn, $user, $pass, $options);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
-        return $this->conn;
     }
-
 }
-
-?>

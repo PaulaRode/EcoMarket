@@ -3,8 +3,9 @@ EcoMarket é um marketplace focado em produtos ecológicos, conectando produtore
 
 Este repositório contém o planejamento inicial do projeto, incluindo o Product Backlog, User Stories e Critérios de Aceitação.
 
-##🔖 Funcionalidades##
-###📢 Área Pública ###(sem login)
+🔖 Funcionalidades
+
+📢 Área Pública(sem login)
 
 **Vitrine de Produtos:** Exibe produtos com imagem, nome, descrição, preço e categoria.
 

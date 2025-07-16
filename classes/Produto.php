@@ -1,6 +1,4 @@
 <?php
-require_once 'DataBase.php';
-
 class Produto {
     public $id;
     public $nome;

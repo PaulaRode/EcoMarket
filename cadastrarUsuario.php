@@ -3,15 +3,18 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'config/config.php'; //  tem que ajustar o caminho do banco 
-
+require_once './classes/DataBase.php';
+require_once './classes/Usuario.php';
+$db = (new DataBase())->getConnection();
+$usuario = new Usuario($db);
 $mensagem = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
     $email = $_POST['email'];
-    $senha = $_POST['senha'];
+    $telefone = $_POST['telefone'];
 
+    $senha = $_POST['senha'];
     // Validação da senha
     if (
         strlen($senha) < 8 ||
@@ -20,24 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ) {
         $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>A senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.</div>";
     } else {
-        $senhaHash = password_hash($senha, PASSWORD_BCRYPT);
-
-        // Verifica se o e-mail já existe
-        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->fetch()) {
-            $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>E-mail já cadastrado.</div>";
+        if (!preg_match('/^\d{10,11}$/', $telefone)) {
+            $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>O telefone deve conter apenas números e ter 10 ou 11 dígitos.</div>";
+        } else if ($usuario->criar($nome, $email, $senha, $telefone)) {
+            header('Location: index.php');
+            exit;
         } else {
-            $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
-            if ($stmt->execute([$nome, $email, $senhaHash])) {
-                header('Location: index.php');
-                exit;
-            } else {
-                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Erro ao cadastrar.</div>";
-            }
+            $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Erro ao cadastrar.</div>";
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -114,22 +110,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="assets/logo/logoEco.png" alt="EcoMarket Logo">
         </div>
         <?= $mensagem ?>
-        <form method="POST" style="display: flex; flex-direction: column; align-items: center;">
+        <form method="POST" style="display: flex; flex-direction: column; align-items: center;" id="form-cadastro">
             <input type="text" class="form-control" name="nome" placeholder="Nome" required
                 style="width: 90%; margin: 8px 0;">
             <input type="email" class="form-control" name="email" placeholder="E-mail" required
                 style="width: 90%; margin: 8px 0;">
+            <input type="tel" class="form-control" name="telefone" placeholder="Telefone" maxlength="11" required
+                style="width: 90%; margin: 8px 0;">
+            <div id="erro-telefone"
+                style="color: #d32f2f; font-size: 0.95rem; margin-bottom: 8px; display: none; width: 90%; text-align: left;">
+                O telefone deve conter apenas números e ter 10 ou 11 dígitos.</div>
             <input type="password" class="form-control" name="senha" placeholder="Senha" required
                 style="width: 90%; margin: 8px 0;">
             <button type="submit" class="btn-cadastrar" style="width: 90%;">Cadastrar</button>
         </form>
     </div>
     <script>
-        // Validação de senha no front-end
-        document.querySelector('form').addEventListener('submit', function (e) {
+        // Validação de senha e telefone no front
+        document.getElementById('form-cadastro').addEventListener('submit', function (e) {
             const senha = document.querySelector('input[name="senha"]').value;
+            const telefone = document.querySelector('input[name="telefone"]').value;
+            const erroTelefone = document.getElementById('erro-telefone');
             const regexMaiuscula = /[A-Z]/;
             const regexEspecial = /[\W_]/;
+            let erro = false;
+            erroTelefone.style.display = 'none';
             if (
                 senha.length < 8 ||
                 !regexMaiuscula.test(senha) ||
@@ -137,6 +142,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ) {
                 alert('A senha deve ter pelo menos 8 caracteres, uma letra maiúscula e um caractere especial.');
                 e.preventDefault();
+                erro = true;
+            }
+            if (!/^\d{10,11}$/.test(telefone)) {
+                erroTelefone.style.display = 'block';
+                e.preventDefault();
+                erro = true;
+            }
+            if (!erro) {
+                erroTelefone.style.display = 'none';
             }
         });
     </script>

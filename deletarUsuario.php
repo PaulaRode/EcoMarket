@@ -3,29 +3,37 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'config/config.php'; // tem que ajustar o caminho do banco 
-
+require_once './classes/DataBase.php';
+require_once './classes/Usuario.php';
+$db = (new DataBase())->getConnection();
+$usuario = new Usuario($db);
 $mensagem = '';
+
 
 session_start();
-$mensagem = '';
 
-//  Faz a verificação se o usuário está logado
+//  Verifica se o usuário está logado
 if (isset($_SESSION['id'])) {
     $id = intval($_SESSION['id']);
     if ($id > 0) {
         if (!isset($_POST['confirmar'])) {
             // Exibe confirmação
-            $mensagem = "<form method='POST'><div style='color: #d32f2f; margin-bottom: 10px; text-align:center;'>Você realmente tem certeza que deseja excluir sua conta?</div><input type='hidden' name='confirmar' value='1'><button type='submit' style='background:#d32f2f;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;'>Sim, excluir</button></form>";
+            $mensagem = "<form method='POST' style='display: flex; flex-direction: column; align-items: center;'><div style='color: #d32f2f; margin-bottom: 10px; text-align:center;'>Você realmente tem certeza que deseja excluir sua conta?</div><input type='hidden' name='confirmar' value='1'><button type='submit' style='background:#d32f2f;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer; margin: 0 auto; display: block;'>Sim, excluir</button></form>";
         } else {
-            $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = ?");
-            if ($stmt->execute([$id])) {
-                // Desloga o usuário
-                session_destroy();
-                header('Location: index.php');
-                exit;
+            $stmt = $db->prepare("DELETE FROM tbUsu WHERE id = ?");
+            if ($stmt === false) {
+                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Erro ao preparar a query de exclusão: " . htmlspecialchars($db->error) . "</div>";
             } else {
-                $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Erro ao deletar usuário.</div>";
+                $stmt->bind_param('i', $id);
+                if ($stmt->execute()) {
+                    // desloga o usuário
+                    session_destroy();
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Erro ao deletar usuário: " . htmlspecialchars($stmt->error) . "</div>";
+                }
+                $stmt->close();
             }
         }
     } else {

@@ -1,0 +1,70 @@
+body {
+    background: #eafaf1;
+    font-family: Arial, sans-serif;
+}
+
+.eco-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.eco-logo img {
+    width: 110px;
+    margin-bottom: 10px;
+}
+
+.eco-title {
+    color: #219150;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.card-cadastro {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    padding: 30px 25px 20px 25px;
+    max-width: 350px;
+    margin: 60px auto;
+}
+
+.form-cadastro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #b2dfdb;
+    margin-bottom: 15px;
+    padding: 10px;
+    width: 90%;
+}
+
+.btn-cadastrar {
+    background: #219150;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    width: 90%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-cadastrar:hover {
+    background: #176c3a;
+}
+
+.mensagem-erro {
+    color: #d32f2f;
+    margin-bottom: 10px;
+    text-align: center;
+}

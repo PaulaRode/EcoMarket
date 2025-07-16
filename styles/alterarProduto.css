@@ -1,0 +1,108 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f2f2f2;
+    color: #218838;
+}
+.logo {
+    display: block;
+    max-width: 150px;
+    margin: 0 auto 20px auto;
+}
+/* Container principal */
+.container-cadastro {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.container-cadastro h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #218838;
+}
+
+/* Campos do formulário */
+form label {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: bold;
+    color: #218838;
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="file"],
+form textarea,
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #218838;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #1aff00;
+    outline: none;
+}
+
+/* Imagem atual */
+.container-cadastro img.logo {
+    display: block;
+    max-width: 150px;
+    margin: 0 auto 20px auto;
+    border-radius: 6px;
+}
+
+/* Botão de envio */
+form input[type="submit"],
+form button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover,
+form button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Botão Voltar */
+.btn-voltar {
+    display: inline-block;
+    margin-top: 20px;
+    text-align: center;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-voltar:hover {
+    background-color: #5a6268;
+}

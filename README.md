@@ -1,85 +1,66 @@
-# EcoMarket 🛒🌱
+🛒 EcoMarket – Conectando Sustentabilidade e Consumo 🌱
+EcoMarket é um marketplace voltado para produtos ecológicos, com o objetivo de aproximar produtores sustentáveis de consumidores conscientes.
+Este repositório reúne o planejamento inicial do projeto, incluindo Product Backlog, User Stories e Critérios de Aceitação.
 
-**EcoMarket** é um marketplace focado em produtos ecológicos, conectando produtores sustentáveis com consumidores conscientes.
+🚀 Funcionalidades Principais
+🌍 Área Pública (sem login)
+🛍️ Vitrine de Produtos: Lista de produtos com imagem, nome, descrição, preço e categoria.
 
-Este repositório contém o planejamento inicial do projeto, incluindo o *Product Backlog*, *User Stories* e *Critérios de Aceitação*.
+🔎 Filtro por Categoria: Permite filtrar produtos por categorias como Alimentos e Cosméticos.
 
----
+🏠 Página Inicial Institucional: Apresenta a missão do EcoMarket e incentiva o usuário a conhecer os produtores.
 
-## 🔖 Funcionalidades
+📬 Página de Contato: Formulário fictício com informações de contato.
 
-### 📢 Área Pública (sem login)
+👩‍🌾 Área do Produtor (com login)
+🔐 Login de Produtor: Acesso autenticado via e-mail e senha.
 
-#### Prioridade Alta
-- **Vitrine de Produtos**: Exibe produtos com imagem, nome, descrição, preço e categoria.
-- **Filtro por Categoria**: Permite filtrar produtos por categoria (ex: Alimentos, Cosméticos).
+➕ Cadastro de Produtos: Formulário com nome, descrição, preço, categoria e imagem.
 
-#### Prioridade Média
-- **Página Inicial Institucional**: Apresenta a causa do EcoMarket e convida o usuário a conhecer os produtores.
+📋 Dashboard de Produtos: Exibe os produtos cadastrados com opções de edição e exclusão.
 
-#### Prioridade Baixa
-- **Página de Contato**: Contém formulário fictício e dados de contato.
+✅ Feedback Visual: Confirmação de ações como cadastro e exclusão de produtos.
 
----
+✨ Funcionalidades Desejáveis (Extras)
+ℹ️ Página “Sobre o EcoMarket”: Detalhes sobre missão, visão e valores do projeto.
 
-### 👨‍🌾 Área do Produtor (com login)
+❗ Modal de Confirmação de Exclusão: Prevenção contra exclusões acidentais.
 
-#### Prioridade Alta
-- **Login do Produtor**: Autenticação por e-mail e senha.
-- **Cadastro de Produto**: Formulário com nome, descrição, preço, categoria e upload de imagem.
-- **Dashboard de Produtos**: Lista de produtos do produtor com opções de editar e excluir.
+🗺️ Mapa Estático dos Produtores: Localização visual dos produtores participantes.
 
-#### Prioridade Média
-- **Feedback Visual**: Mensagens de confirmação para ações como cadastro de produtos.
+👥 Histórias de Usuário
+Público Visitante
+Como visitante, quero visualizar uma vitrine com produtos sustentáveis.
 
----
+Como visitante, quero filtrar produtos por categoria.
 
-### ✨ Funcionalidades Desejáveis
+Como visitante, quero entender a proposta do projeto na página inicial.
 
-#### Prioridade Média
-- **Página “Sobre o EcoMarket”**: Informações sobre missão, visão e valores.
-- **Confirmação de Exclusão**: Modal de confirmação ao excluir produtos.
-- **Mapa Estático dos Produtores**: Exibição de mapa com localização dos produtores.
+Produtor Logado
+Como produtor, quero acessar o sistema com login.
 
----
+Como produtor, quero cadastrar meus produtos com imagens.
 
-## 👤 Histórias de Usuário
+Como produtor, quero editar ou excluir meus próprios produtos.
 
-### Área Pública
-- Como visitante, quero ver uma vitrine de produtos sustentáveis.
-- Como visitante, quero filtrar produtos por categoria.
-- Como visitante, quero entender a causa do projeto na página inicial.
+Funcionalidades Desejáveis
+Como produtor, quero uma confirmação antes de excluir um produto.
 
-### Área do Produtor
-- Como produtor, quero fazer login no sistema.
-- Como produtor, quero cadastrar produtos com imagens.
-- Como produtor, quero editar ou excluir meus produtos.
+Como visitante, quero visualizar a origem dos produtos no mapa.
 
-### Funcionalidades Desejáveis
-- Como produtor, quero uma confirmação antes de excluir produtos.
-- Como visitante, quero ver no mapa a origem dos produtos.
+✅ Critérios de Aceitação
+📦 Cadastro de Produtos
+Todos os campos obrigatórios devem ser preenchidos: nome, descrição, preço, categoria e imagem.
 
----
+Mensagem de sucesso deve ser exibida após o cadastro.
 
-## ✅ Critérios de Aceitação
+O produto deve aparecer automaticamente na vitrine pública.
 
-### Cadastro de Produto
-- Todos os campos obrigatórios devem estar preenchidos: nome, descrição, preço, categoria, imagem.
-- Exibir mensagem de sucesso após cadastro.
-- Produto aparece automaticamente na vitrine pública.
+🧩 Filtro de Categorias
+O filtro deve funcionar dinamicamente (sem recarregar a página).
 
-### Filtro por Categoria
-- O filtro deve funcionar sem recarregar a página.
-- Exibir mensagem caso não haja produtos na categoria escolhida.
+Mensagem informativa caso não existam produtos na categoria selecionada.
 
----
-
-## 🔗 Acesso ao Trello
-
-Acompanhe o progresso do projeto pelo quadro do Trello:  
+📌 Acompanhamento do Projeto
+Acompanhe o progresso pelo quadro no Trello:
 [🔗 Link para o Trello](https://trello.com/invite/b/68745d732c998e59d120e4ab/ATTI34ee12b6a3e5cd83d81deb1d6637314f86DCD379/projeto-ecomarket)
-
----
-
-## 📁 Organização
-

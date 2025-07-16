@@ -1,20 +1,23 @@
 <?php
-class Categoria
-{
-    private $conn;
-    private $table_name = "tbCategorias";
+require_once 'DataBase.php';
 
-    public function __construct($db)
-    {
-        $this->conn = $db;
+class Categoria {
+    public $id;
+    public $nome;
+
+    public function __construct($id, $nome) {
+        $this->id = $id;
+        $this->nome = $nome;
     }
 
-
-    public function ler()
-    {
-        $query = "SELECT * FROM " . $this->table_name; 
-        return $this->conn->query($query);
+    public static function buscarTodas() {
+        $conn = DataBase::getConnection();
+        $sql = 'SELECT id, nome FROM tbCategorias';
+        $stmt = $conn->query($sql);
+        $categorias = [];
+        while ($row = $stmt->fetch()) {
+            $categorias[] = new Categoria($row['id'], $row['nome']);
+        }
+        return $categorias;
     }
-
 }
-

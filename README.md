@@ -43,7 +43,3 @@ Filtro por Categoria
 O filtro deve funcionar sem recarregar a página.
 
 Exibir mensagem caso não haja produtos na categoria escolhida.
-
-🔗 Acesso ao Trello
-
-(https://trello.com/invite/b/68745d732c998e59d120e4ab/ATTI34ee12b6a3e5cd83d81deb1d6637314f86DCD379/projeto-ecomarket)

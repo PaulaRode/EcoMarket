@@ -38,7 +38,7 @@ if (isset($_SESSION['id'])) {
         }
     } else {
         $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>ID inválido.</div>";
-    }
+    } 
 } else {
     $mensagem = "<div style='color: #d32f2f; margin-bottom: 10px;'>Nenhum usuário logado.</div>";
 }

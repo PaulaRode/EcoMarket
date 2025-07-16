@@ -520,7 +520,7 @@ if ($categoriaSelecionada) {
                     <p>${produto.categoria}</p>
                 </div>
                 <div style="text-align: center;">
-                    <button onclick="comprarProduto(${produto.id})" style="background: linear-gradient(90deg, #388e3c, #66bb6a); color: #fff; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                    <button onclick="comprarProduto('${produto.nome}', '${produto.descricao}', ${produto.preco}, '${produto.categoria}')" style="background: linear-gradient(90deg, #388e3c, #66bb6a); color: #fff; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
                         🛒 Finalizar Compra
                     </button>
                 </div>
@@ -533,8 +533,21 @@ if ($categoriaSelecionada) {
             document.getElementById(modalId).classList.remove('active');
         }
 
-        function comprarProduto(produtoId) {
-            alert('Funcionalidade de compra será implementada em breve! Produto ID: ' + produtoId);
+        function comprarProduto(nome, descricao, preco, categoria) {
+            // Formatar mensagem para WhatsApp
+            const mensagem = `Olá! Gostaria de comprar o produto: *${nome}*%0A%0A` +
+                           `*Descrição:* ${descricao}%0A` +
+                           `*Preço:* R$ ${parseFloat(preco).toFixed(2).replace('.', ',')}%0A` +
+                           `*Categoria:* ${categoria}%0A%0A` +
+                           `Poderia me ajudar com mais informações sobre este produto?`;
+            
+            // Número do WhatsApp (substitua pelo número correto)
+            const numeroWhatsApp = '5511999999999'; // Formato: código do país + DDD + número
+            
+            // Abrir WhatsApp
+            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensagem}`;
+            window.open(urlWhatsApp, '_blank');
+            
             fecharModal('modalProduto');
         }
 

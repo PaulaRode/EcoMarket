@@ -297,6 +297,34 @@ $valores = [
             to { opacity: 1; }
         }
 
+        .voltar-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2e8b57, #3cb371);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 20px auto;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .voltar-btn:hover {
+            background: linear-gradient(135deg, #3cb371, #2e8b57);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 139, 87, 0.4);
+        }
+
+        .voltar-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
         @media (max-width: 768px) {
             .content {
                 grid-template-columns: 1fr;
@@ -393,6 +421,10 @@ $valores = [
                     </svg>
                 </a>
             </div>
+        </div>
+
+        <div class="voltar-container">
+            <a href="index.php" class="voltar-btn">🏠 Voltar para a Página Inicial</a>
         </div>
     </div>
 </body>

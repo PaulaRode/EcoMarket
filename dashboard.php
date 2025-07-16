@@ -2,17 +2,29 @@
 session_start();
 require_once 'classes/Usuario.php';
 require_once 'classes/Produto.php';
+require_once 'config/config.php';
 
-// Verificar se o usuário está logado (opcional)
+// Verificar se o usuário está logado - OBRIGATÓRIO
+if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
+    // Redirecionar para login se não estiver logado
+    header('Location: login.php');
+    exit;
+}
+
 $usuario = null;
 $produtos = [];
 
-if (isset($_SESSION['usuario_id'])) {
-    $usuario = Usuario::buscarPorId($_SESSION['usuario_id']);
-    $produtos = Produto::buscarPorProdutor($_SESSION['usuario_id']);
+// Buscar dados do usuário logado
+if (isset($_SESSION['id'])) {
+    $usuarioObj = new Usuario($conn);
+    $usuario = $usuarioObj->buscarPorId($_SESSION['id']);
+    // Buscar apenas os produtos do usuário logado
+    $produtos = Produto::buscarPorProdutor($_SESSION['id']);
 } else {
-    // Se não estiver logado, mostrar todos os produtos
-    $produtos = Produto::buscarTodos();
+    // Se não conseguir buscar o usuário, fazer logout
+    session_destroy();
+    header('Location: login.php');
+    exit;
 }
 ?>
 
@@ -382,10 +394,10 @@ if (isset($_SESSION['usuario_id'])) {
     <div class="container">
         <div class="header">
             <img src="assets/logo.png" alt="EcoMarket Logo" style="height:80px; width:auto; max-width:150px; margin-right:14px;">
-            <h1>🌱 Área do Produtor</h1>
+            <h1>🌱 Meu Dashboard</h1>
             <div class="user-info">
                 <?php if ($usuario): ?>
-                    <span>Olá, <?php echo htmlspecialchars($usuario->nome); ?></span>
+                    <span>Olá, <?php echo htmlspecialchars($usuario['nome']); ?></span>
                     <button class="logout-btn" onclick="logout()">Sair</button>
                 <?php else: ?>
                     <span>Visualizando todos os produtos</span>
@@ -396,15 +408,9 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
         
         <div class="actions-bar">
-            <?php if ($usuario): ?>
-                <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
-                    ➕ Adicionar Produto
-                </button>
-            <?php else: ?>
-                <button class="add-product-btn" onclick="window.location.href='login.php'">
-                    🔐 Fazer Login para Gerenciar
-                </button>
-            <?php endif; ?>
+            <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
+                ➕ Adicionar Produto
+            </button>
             <div class="stats">
                 <div class="stat-item">
                     <div class="stat-number"><?php echo count($produtos); ?></div>
@@ -421,15 +427,9 @@ if (isset($_SESSION['usuario_id'])) {
             <div class="empty-state">
                 <h3>Nenhum produto cadastrado ainda</h3>
                 <p>Comece adicionando seu primeiro produto sustentável!</p>
-                <?php if ($usuario): ?>
-                    <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
-                        ➕ Adicionar Primeiro Produto
-                    </button>
-                <?php else: ?>
-                    <button class="add-product-btn" onclick="window.location.href='login.php'">
-                        🔐 Fazer Login para Adicionar
-                    </button>
-                <?php endif; ?>
+                <button class="add-product-btn" onclick="window.location.href='cadastrarProduto.php'">
+                    ➕ Adicionar Primeiro Produto
+                </button>
             </div>
         <?php else: ?>
             <div class="products-grid">

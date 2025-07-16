@@ -14,9 +14,10 @@ class DataBase {
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
         try {
-            return new PDO($dsn, $user, $pass, $options);
+            $pdo = new PDO($dsn, $user, $pass, $options);
+            return $pdo;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
+            throw new Exception("Erro na conexão com o banco: " . $e->getMessage());
         }
     }
 }

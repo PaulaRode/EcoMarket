@@ -20,18 +20,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: new URLSearchParams({ email, senha })
             });
 
-            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Primeiro vamos ver o que está sendo retornado
+            const responseText = await response.text();
+            console.log('Resposta do servidor:', responseText);
+
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('Erro ao fazer parse do JSON:', parseError);
+                loginMessage.textContent = 'Erro no formato da resposta do servidor';
+                return;
+            }
 
             if (data.erro) {
                 loginMessage.textContent = data.erro;
             } else if (data.sucesso) {
                 loginMessage.style.color = 'lightgreen';
                 loginMessage.textContent = 'Login realizado com sucesso!';
-                setTimeout(() => window.location.href = 'dashboard.php', 1000);
+                // Redirecionar para o dashboard após login bem-sucedido
+                setTimeout(() => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        window.location.href = 'dashboard.php';
+                    }
+                }, 1000);
             }
         } catch (error) {
-            loginMessage.textContent = 'Erro na requisição.';
-            console.error(error);
+            loginMessage.textContent = 'Erro na requisição: ' + error.message;
+            console.error('Erro completo:', error);
         }
     });
 });

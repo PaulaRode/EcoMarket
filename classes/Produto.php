@@ -59,4 +59,26 @@ class Produto {
         }
         return $produtos;
     }
+
+    public static function buscarPorProdutor($produtorId) {
+        $conn = DataBase::getConnection();
+        $sql = 'SELECT p.id, p.nome, p.descricao, p.preco, c.nome as categoria
+                FROM tbProduto p
+                JOIN tbCategorias c ON p.categoria = c.id
+                WHERE p.produtor_id = :produtorId';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['produtorId' => $produtorId]);
+        $produtos = [];
+        while ($row = $stmt->fetch()) {
+            $produtos[] = new Produto(
+                $row['id'],
+                $row['nome'],
+                $row['descricao'],
+                $row['preco'],
+                $row['categoria']
+                // , null // Descomente e ajuste quando a coluna existir no banco
+            );
+        }
+        return $produtos;
+    }
 }

@@ -233,61 +233,6 @@ if ($categoriaSelecionada) {
             background: linear-gradient(90deg, #66bb6a, #388e3c);
             transform: scale(1.04);
         }
-        /* Modal Login */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-login {
-            background: #fff;
-            border-radius: 14px;
-            padding: 36px 32px 28px 32px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-            min-width: 320px;
-            max-width: 90vw;
-            position: relative;
-            text-align: center;
-        }
-        .modal-login h2 { color: #388e3c; margin-bottom: 18px; }
-        .modal-login label { display: block; text-align: left; margin-bottom: 6px; color: #388e3c; font-weight: bold; }
-        .modal-login input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 18px;
-            border-radius: 6px;
-            border: 1.5px solid #bdbdbd;
-            font-size: 1em;
-        }
-        .modal-login button[type="submit"] {
-            background: linear-gradient(90deg, #388e3c, #66bb6a);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 0;
-            width: 100%;
-            font-size: 1.08em;
-            font-weight: 800;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .modal-login button[type="submit"]:hover { background: linear-gradient(90deg, #66bb6a, #388e3c); }
-        .modal-login .fechar-modal {
-            position: absolute;
-            top: 10px;
-            right: 16px;
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            color: #888;
-            cursor: pointer;
-        }
-        .modal-login .fechar-modal:hover { color: #d32f2f; }
         /* Responsividade */
         @media (max-width: 900px) {
             .container { max-width: 98vw; padding: 10px; }
@@ -301,7 +246,6 @@ if ($categoriaSelecionada) {
             .vitrine { flex-direction: column; align-items: center; gap: 12px; }
             .card { width: 98vw; max-width: 340px; padding: 12px; }
             .card img { width: 90px; height: 90px; }
-            .modal-login { min-width: 90vw; padding: 18px 6vw 16px 6vw; }
             .topbar .logo-area span { font-size: 1.2em; }
         }
     </style>
@@ -313,26 +257,12 @@ if ($categoriaSelecionada) {
             <span>EcoMarket</span>
         </div>
         <div class="nav-links">
-            <a href="contato.php">Contato</a>
-            <a href="dashboard.php">Dashboard</a>
-            <button type="button" class="login-btn" id="abrirLogin">Login</button>
+            <a href="sobre.php">Contato</a>
+            <a href="login.php" class="login-btn">Login</a>
         </div>
     </div>
     <div class="container">
-        <!-- Modal de Login -->
-        <div class="modal-overlay" id="modalLogin">
-            <div class="modal-login">
-                <button class="fechar-modal" id="fecharLogin" title="Fechar">&times;</button>
-                <h2>Login do Produtor</h2>
-                <form autocomplete="off">
-                    <label for="login-email">E-mail</label>
-                    <input type="email" id="login-email" name="email" placeholder="seu@email.com" required>
-                    <label for="login-senha">Senha</label>
-                    <input type="password" id="login-senha" name="senha" placeholder="Sua senha" required>
-                    <button type="submit" disabled>Entrar</button>
-                </form>
-            </div>
-        </div>
+
         <div class="institucional">
             <h2>EcoMarket: onde suas compras cuidam do planeta 🌱</h2>
             <p>O EcoMarket conecta você a produtos sustentáveis, naturais e orgânicos, promovendo o consumo consciente e apoiando pequenos produtores locais. Junte-se a nós nessa causa e descubra uma nova forma de consumir!</p>
@@ -363,22 +293,7 @@ if ($categoriaSelecionada) {
             <?php endforeach; ?>
         </div>
     </div>
-    <script>
-        const abrirLogin = document.getElementById('abrirLogin');
-        const modalLogin = document.getElementById('modalLogin');
-        const fecharLogin = document.getElementById('fecharLogin');
-        abrirLogin.addEventListener('click', () => {
-            modalLogin.classList.add('active');
-        });
-        fecharLogin.addEventListener('click', () => {
-            modalLogin.classList.remove('active');
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === modalLogin) {
-                modalLogin.classList.remove('active');
-            }
-        });
-    </script>
+
 </body>
 </html>
 

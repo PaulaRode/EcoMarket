@@ -551,7 +551,7 @@ session_start();
                 </svg>
 
                 <div class="login-container">
-                    <img src="assests/logo.png" alt="Eco Market Logo" class="login-logo">
+                    <img src="assets/logo.png" alt="Eco Market Logo" class="login-logo">
                     <div class="login-title">Bem<br>Vindo!</div>
                     <form class="login-form" id="loginForm" method="post" action="javascript:void(0);">
                         <div id="login-message" style="color: #fff; text-align: center; margin-bottom: 10px;"></div>

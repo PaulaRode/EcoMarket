@@ -24,154 +24,172 @@ if (isset($_SESSION['usuario_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
-            --verde-principal: #43a047;
+            --verde-principal: #388e3c;
+            --verde-secundario: #66bb6a;
+            --verde-escuro: #205723;
             --verde-claro: #e8f5e9;
             --verde-medio: #a5d6a7;
-            --verde-escuro: #2e7d32;
             --branco: #fff;
-            --cinza-leve: #f5f5f5;
-            --cinza-texto: #5d6d5d;
+            --cinza-leve: #f4f6f5;
+            --cinza-texto: #4e5d4e;
             --amarelo-suave: #fffde7;
             --vermelho-suave: #ffebee;
-            --sombra: 0 2px 16px rgba(67, 160, 71, 0.08);
+            --sombra: 0 4px 24px rgba(56, 142, 60, 0.10);
+            --borda-card: 1.5px solid #d0e6d0;
         }
         html, body {
-            font-family: 'Segoe UI', 'Roboto', 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--verde-claro) 0%, var(--cinza-leve) 100%);
+            font-family: 'Montserrat', 'Segoe UI', 'Roboto', Arial, sans-serif;
+            background: #1c3c27;
             min-height: 100vh;
         }
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 24px 10px 40px 10px;
+            padding: 32px 12px 48px 12px;
         }
         .header {
             background: var(--branco);
-            border-radius: 18px;
-            padding: 28px 24px 18px 24px;
+            border-radius: 20px;
+            padding: 32px 32px 20px 32px;
+            margin-bottom: 36px;
+            box-shadow: var(--sombra);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            border: var(--borda-card);
+        }
+        .header h1 {
+            color: var(--verde-escuro);
+            font-size: 2.2em;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+        .header h1::after {
+            content: '\1F331';
+            font-size: 1.2em;
+        }
+        .dashboard-btn, .voltar-btn {
+            background: linear-gradient(90deg, var(--verde-principal), var(--verde-secundario));
+            color: var(--branco);
+            padding: 10px 28px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05em;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px rgba(56, 142, 60, 0.10);
+            border: none;
+            outline: none;
+        }
+        .dashboard-btn:hover, .voltar-btn:hover {
+            background: linear-gradient(90deg, var(--verde-secundario), var(--verde-principal));
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 18px rgba(56, 142, 60, 0.18);
+        }
+        .voltar-btn {
+            margin-left: auto !important;
+            order: 2;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--verde-claro);
+            padding: 8px 18px;
+            border-radius: 16px;
+            font-size: 1.08em;
+        }
+        .user-info span {
+            color: var(--verde-principal);
+            font-weight: 600;
+        }
+        .logout-btn {
+            background: #e57373;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .logout-btn:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+        .actions-bar {
+            background: var(--branco);
+            border-radius: 16px;
+            padding: 26px 22px;
             margin-bottom: 32px;
             box-shadow: var(--sombra);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 18px;
-        }
-        .header h1 {
-            color: var(--verde-escuro);
-            font-size: 2.1em;
-            font-weight: 700;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .header h1::after {
-            content: '\1F331';
-            font-size: 1.2em;
-        }
-        .dashboard-btn {
-            background: var(--verde-principal);
-            color: var(--branco);
-            padding: 8px 22px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1em;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 6px rgba(67,160,71,0.08);
-        }
-        .dashboard-btn:hover {
-            background: var(--verde-escuro);
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .user-info span {
-            color: var(--verde-principal);
-            font-weight: 500;
-        }
-        .logout-btn {
-            background: #ff7043;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 22px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 500;
-            transition: background 0.2s, transform 0.2s;
-        }
-        .logout-btn:hover {
-            background: #d84315;
-            transform: translateY(-2px);
-        }
-        .actions-bar {
-            background: var(--branco);
-            border-radius: 14px;
-            padding: 22px 18px;
-            margin-bottom: 28px;
-            box-shadow: var(--sombra);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 18px;
+            gap: 20px;
+            border: var(--borda-card);
         }
         .add-product-btn {
-            background: linear-gradient(135deg, var(--verde-medio), var(--verde-principal));
+            background: linear-gradient(90deg, var(--verde-medio), var(--verde-principal));
             color: var(--branco);
             border: none;
-            padding: 13px 28px;
-            border-radius: 28px;
+            padding: 15px 32px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
+            font-size: 1.13em;
+            font-weight: 700;
             transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             box-shadow: 0 2px 8px rgba(56, 142, 60, 0.10);
         }
         .add-product-btn:hover {
-            background: linear-gradient(135deg, var(--verde-principal), var(--verde-medio));
-            transform: translateY(-2px) scale(1.03);
+            background: linear-gradient(90deg, var(--verde-principal), var(--verde-medio));
+            transform: translateY(-2px) scale(1.04);
             box-shadow: 0 4px 18px rgba(56, 142, 60, 0.18);
         }
         .stats {
             display: flex;
-            gap: 18px;
+            gap: 22px;
             flex-wrap: wrap;
         }
         .stat-item {
             background: var(--verde-claro);
-            padding: 14px 24px;
-            border-radius: 12px;
+            padding: 18px 32px;
+            border-radius: 14px;
             text-align: center;
-            min-width: 120px;
+            min-width: 130px;
             box-shadow: 0 1px 4px rgba(139, 195, 74, 0.08);
+            border: var(--borda-card);
         }
         .stat-number {
-            font-size: 1.6em;
+            font-size: 1.7em;
             font-weight: bold;
             color: var(--verde-principal);
         }
         .stat-label {
-            font-size: 1em;
+            font-size: 1.08em;
             color: var(--verde-escuro);
             margin-top: 4px;
         }
         .products-grid {
             display: flex;
             flex-direction: column;
-            gap: 26px;
-            margin-top: 28px;
+            gap: 30px;
+            margin-top: 32px;
         }
         .product-card {
             background: linear-gradient(90deg, var(--branco) 60%, var(--verde-claro) 100%);
-            border-radius: 18px;
+            border-radius: 20px;
             box-shadow: var(--sombra);
             padding: 0;
             display: flex;
@@ -180,68 +198,71 @@ if (isset($_SESSION['usuario_id'])) {
             overflow: hidden;
             position: relative;
             border-left: 8px solid var(--verde-medio);
+            border: var(--borda-card);
         }
         .product-image {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             object-fit: cover;
-            border-radius: 0 18px 18px 0;
+            border-radius: 0 20px 20px 0;
             margin-right: 0;
             background: var(--verde-medio);
             flex-shrink: 0;
+            border-right: 1.5px solid #c8e6c9;
         }
         .product-info {
             flex: 1;
-            padding: 24px 24px 24px 18px;
+            padding: 28px 28px 28px 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .product-title {
-            font-size: 1.25em;
-            font-weight: 600;
+            font-size: 1.3em;
+            font-weight: 700;
             color: var(--verde-escuro);
             margin-bottom: 2px;
         }
         .product-description {
             color: var(--cinza-texto);
             margin-bottom: 6px;
-            line-height: 1.5;
-            font-size: 1em;
+            line-height: 1.6;
+            font-size: 1.05em;
         }
         .product-price {
-            font-size: 1.1em;
+            font-size: 1.13em;
             font-weight: bold;
             color: var(--verde-principal);
             margin-bottom: 4px;
         }
         .product-category {
-            background: var(--verde-claro);
-            color: var(--verde-principal);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.95em;
+            background: var(--verde-medio);
+            color: var(--verde-escuro);
+            padding: 5px 18px;
+            border-radius: 22px;
+            font-size: 1em;
             display: inline-block;
             margin-bottom: 0;
+            font-weight: 600;
         }
         .product-actions {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-right: 24px;
+            gap: 14px;
+            margin-right: 28px;
             align-items: flex-end;
         }
         .btn-edit, .btn-delete {
             border: none;
-            padding: 10px 22px;
-            border-radius: 22px;
-            font-size: 1em;
-            font-weight: 500;
+            padding: 12px 26px;
+            border-radius: 24px;
+            font-size: 1.05em;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.2s, transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .btn-edit {
             background: var(--amarelo-suave);
@@ -267,17 +288,21 @@ if (isset($_SESSION['usuario_id'])) {
         }
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 70px 20px;
             color: #666;
+            background: var(--branco);
+            border-radius: 18px;
+            box-shadow: var(--sombra);
+            border: var(--borda-card);
         }
         .empty-state h3 {
             color: var(--verde-escuro);
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             font-size: 1.5em;
         }
         .empty-state p {
-            margin-bottom: 24px;
-            font-size: 1.1em;
+            margin-bottom: 28px;
+            font-size: 1.13em;
         }
         /* Modal de confirmação */
         .modal-overlay {
@@ -292,57 +317,63 @@ if (isset($_SESSION['usuario_id'])) {
         .modal-overlay.active { display: flex; }
         .modal-confirm {
             background: var(--branco);
-            border-radius: 16px;
-            padding: 32px;
-            max-width: 400px;
+            border-radius: 18px;
+            padding: 36px;
+            max-width: 420px;
             text-align: center;
             box-shadow: 0 8px 32px rgba(67,160,71,0.13);
+            border: var(--borda-card);
         }
         .modal-confirm h3 {
             color: var(--verde-escuro);
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
         .modal-confirm p {
             color: #666;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
         .modal-actions {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             justify-content: center;
         }
         .btn-cancel {
             background: #9e9e9e;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 24px;
+            border-radius: 22px;
             cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
         }
         .btn-confirm {
             background: #ef5350;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 24px;
+            border-radius: 22px;
             cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
         }
         @media (max-width: 900px) {
             .container { padding: 8px; }
             .header, .actions-bar { flex-direction: column; text-align: center; }
             .stats { justify-content: center; }
+            .voltar-btn { margin-left: 0 !important; order: unset; align-self: flex-end; }
         }
         @media (max-width: 700px) {
-            .products-grid { gap: 18px; }
+            .products-grid { gap: 20px; }
             .product-card { flex-direction: column; align-items: stretch; border-left: 0; border-top: 8px solid var(--verde-medio); }
-            .product-image { width: 100%; height: 180px; border-radius: 0 0 18px 18px; }
-            .product-actions { flex-direction: row; justify-content: flex-end; margin: 12px 0 0 0; }
-            .product-info { padding: 18px 12px 8px 12px; }
+            .product-image { width: 100%; height: 180px; border-radius: 0 0 20px 20px; border-right: 0; }
+            .product-actions { flex-direction: row; justify-content: flex-end; margin: 14px 0 0 0; }
+            .product-info { padding: 18px 12px 10px 12px; }
         }
         @media (max-width: 500px) {
-            .header h1 { font-size: 1.2em; }
+            .header h1 { font-size: 1.1em; }
             .product-title { font-size: 1em; }
-            .product-description { font-size: 0.95em; }
+            .product-description { font-size: 0.97em; }
             .product-image { height: 120px; }
         }
     </style>
@@ -350,7 +381,7 @@ if (isset($_SESSION['usuario_id'])) {
 <body>
     <div class="container">
         <div class="header">
-            <img src="assets/logo(1).png" alt="EcoMarket Logo" style="height:48px; width:auto; max-width:90px; margin-right:14px;">
+            <img src="assets/logo.png" alt="EcoMarket Logo" style="height:80px; width:auto; max-width:150px; margin-right:14px;">
             <h1>🌱 Área do Produtor</h1>
             <div class="user-info">
                 <?php if ($usuario): ?>
@@ -361,7 +392,7 @@ if (isset($_SESSION['usuario_id'])) {
                     <button class="logout-btn" onclick="window.location.href='login.php'">Login</button>
                 <?php endif; ?>
             </div>
-            <a href="index.php" class="dashboard-btn" style="margin-left:auto; background:#388e3c; color:white; padding:8px 22px; border-radius:20px; text-decoration:none; font-weight:bold;">← Voltar para Vitrine</a>
+            <a href="index.php" class="dashboard-btn voltar-btn">← Voltar para Vitrine</a>
         </div>
         
         <div class="actions-bar">

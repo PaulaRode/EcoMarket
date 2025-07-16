@@ -11,7 +11,9 @@ class Usuario  {
         $query = "INSERT INTO " . $this->table_name . " (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $password_hash = password_hash($senha, PASSWORD_BCRYPT);
-        return $stmt->execute([$nome, $email, $password_hash, $telefone]);
+        $stmt->bindParam("ssss", $nome, $email, $password_hash, $telefone);
+        $stmt->execute();
+        return true; 
     }
 
     public function ler() {

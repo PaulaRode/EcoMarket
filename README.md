@@ -316,8 +316,13 @@ Este projeto foi desenvolvido para fins educacionais e comerciais.
 ## 👥 Autores
 
 **EcoMarket Team** - Desenvolvimento inicial
-**PO** - Leonardo Andriotti - 2001leomoura@gmail.com
-**Scrum Master** - Paula Rode - paulamrode@gmail.com
+
+**PO** 
+- Leonardo Andriotti - 2001leomoura@gmail.com
+
+**Scrum Master**
+- Paula Rode - paulamrode@gmail.com
+
 **Devs**
 - Higor Carboni - ohigor.carboni@gmail.com
 - Arthur Cantelle -arthurcccantelle@gmail.com

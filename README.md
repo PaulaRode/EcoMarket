@@ -316,6 +316,19 @@ Este projeto foi desenvolvido para fins educacionais e comerciais.
 ## 👥 Autores
 
 **EcoMarket Team** - Desenvolvimento inicial
+**PO** - Leonardo Andriotti
+**Scrum Master** - Paula Rode
+**Devs**
+- Higor Carboni
+- Arthur Cantelle
+- Rafael Gomes
+- Davi Schinoff
+- Wesley Lima
+- Rodrigo Nunes
+- Matheus Baumhardt
+- Daniel Jacob
+- Gabriel Bock
+- Miguel Oliveira
 
 ## 📞 Suporte
 

@@ -316,25 +316,19 @@ Este projeto foi desenvolvido para fins educacionais e comerciais.
 ## 👥 Autores
 
 **EcoMarket Team** - Desenvolvimento inicial
-**PO** - Leonardo Andriotti
-**Scrum Master** - Paula Rode
+**PO** - Leonardo Andriotti - 2001leomoura@gmail.com
+**Scrum Master** - Paula Rode - paulamrode@gmail.com
 **Devs**
-- Higor Carboni
-- Arthur Cantelle
-- Rafael Gomes
-- Davi Schinoff
-- Wesley Lima
-- Rodrigo Nunes
-- Matheus Baumhardt
-- Daniel Jacob
-- Gabriel Bock
-- Miguel Oliveira
-
-## 📞 Suporte
-
-- **Issues**: GitHub Issues
-- **Documentação**: README.md
-- **Teste de Conexão**: `test_connection.php`
+- Higor Carboni - ohigor.carboni@gmail.com
+- Arthur Cantelle -arthurcccantelle@gmail.com
+- Rafael Gomes - rg9402393@gmail.com
+- Davi Schinoff - davi.schinoff@gmail.com
+- Wesley Lima - wesleydelimarosa2024@gmail.com
+- Rodrigo Nunes - rodrigo59130@gmail.com
+- Matheus Baumhardt - matheusbaumhardt654@gmail.com
+- Daniel Jacob - dj76318@gmail.com
+- Gabriel Bock - gabrielcostabock@gmail.com
+- Miguel Oliveira - miguel.oliveirahuehue@gmail.com
 
 ---
 
